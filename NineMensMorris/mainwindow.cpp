@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "board.h"
 #include <QLabel>
 #include <QPixmap>
 
@@ -22,9 +23,12 @@ MainWindow::~MainWindow()
 }
 
 // 'New Game' Button
+// TODO: Temporary method, attached to 'New Game' button in layout
+// Board is completely un-used atm, it's just there to create a
+// test UI for board and auto-generated button layout
 void MainWindow::on_pushButton_clicked()
 {
     // Set stackedWidget to display game state
-    ui->stackedWidget->setCurrentIndex(GAME_PAGE);
-
+    // ui->stackedWidget->setCurrentIndex(GAME_PAGE);
+    Board *board = new Board();
 }
