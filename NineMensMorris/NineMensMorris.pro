@@ -10,15 +10,21 @@ CONFIG += c++11
 
 SOURCES += \
     board.cpp \
+    button.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    testboard.cpp
 
 HEADERS += \
     board.h \
-    mainwindow.h
+    button.h \
+    mainwindow.h \
+    testboard.h
 
 FORMS += \
     mainwindow.ui
+
+QT += testlib
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

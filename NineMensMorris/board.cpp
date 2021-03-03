@@ -1,8 +1,24 @@
 #include "board.h"
 #include <QMessageBox>
 
-Board::Board(QObject *parent) : QObject(parent)
+#define BUTTON_WIDTH 1
+#define BUTTON_HEIGHT 1
+#define BOARD_WIDTH 7
+// 3 for this case
+#define HALF_BOARD_WIDTH int((BOARD_WIDTH -1) / 2)
+#define BOARD_HEIGHT 7
+// 3 for this case
+#define HALF_BOARD_HEIGHT int((BOARD_HEIGHT -1) / 2)
+// 24 for this case
+#define BOARD_ELEMENTS int(((BOARD_WIDTH * BOARD_HEIGHT)-1)/2)
+
+// Initializer
+Board::Board(QWidget *parent) : QWidget(parent)
 {
+}
+
+// Board GUI is created
+QWidget* Board::CreateBoardGUI() {
     // Create a new Grid Layout
     QGridLayout *gridLayout = new QGridLayout;
 
@@ -22,120 +38,16 @@ Board::Board(QObject *parent) : QObject(parent)
     w->setLayout(gridLayout);
 
     // TODO: Can re-name / remove
-    w->setWindowTitle("Board Test");
+    //w->setWindowTitle("Board Test");
 
     // Set Size
     w->setFixedSize(500,500);
 
-    // Set background
+    // Set background to be stretched to the size of the widget / Fixed Sized of the layout if set
     // TODO: Replace temporary image with a final one
-    QPixmap pixmap;
-    pixmap.load(":/img/img/board.jpg");
-    pixmap = pixmap.scaled(w->size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    w->setStyleSheet(".QWidget {border-image:url(:/img/img/board.jpg) 0 0 0 0 stretch stretch}");
 
-    QPalette palette;
-    palette.setBrush(QPalette::Window, pixmap);
-    w->setPalette(palette);
-
-    // Display
-    w->show();
-}
-
-// -- void CreateButtons()
-// -- Creates all necessary buttons for Nine Men's Morris and adds them to a privately stored vector in Board
-// TODO: Can probably be done programatically
-// The names were chosen to help me debug positioning, might be useful for future debugging to keep names?
-void Board::CreateButtons() {
-// Create all buttons necessary for the board
-// Adds them to the QVector as well
-    QPushButton *a7 = new QPushButton("");
-    buttons.append(a7);
-    QPushButton *d7 = new QPushButton("");
-    buttons.append(d7);
-    QPushButton *g7 = new QPushButton("");
-    buttons.append(g7);
-    QPushButton *b6 = new QPushButton("");
-    buttons.append(b6);
-    QPushButton *d6 = new QPushButton("");
-    buttons.append(d6);
-    QPushButton *f6 = new QPushButton("");
-    buttons.append(f6);
-    QPushButton *c5 = new QPushButton("");
-    buttons.append(c5);
-    QPushButton *d5 = new QPushButton("");
-    buttons.append(d5);
-    QPushButton *e5 = new QPushButton("");
-    buttons.append(e5);
-    QPushButton *a4 = new QPushButton("");
-    buttons.append(a4);
-    QPushButton *b4 = new QPushButton("");
-    buttons.append(b4);
-    QPushButton *c4 = new QPushButton("");
-    buttons.append(c4);
-    QPushButton *e4 = new QPushButton("");
-    buttons.append(e4);
-    QPushButton *f4 = new QPushButton("");
-    buttons.append(f4);
-    QPushButton *g4 = new QPushButton("");
-    buttons.append(g4);
-    QPushButton *c3 = new QPushButton("");
-    buttons.append(c3);
-    QPushButton *d3 = new QPushButton("");
-    buttons.append(d3);
-    QPushButton *e3 = new QPushButton("");
-    buttons.append(e3);
-    QPushButton *b2 = new QPushButton("");
-    buttons.append(b2);
-    QPushButton *d2 = new QPushButton("");
-    buttons.append(d2);
-    QPushButton *f2 = new QPushButton("");
-    buttons.append(f2);
-    QPushButton *a1 = new QPushButton("");
-    buttons.append(a1);
-    QPushButton *d1 = new QPushButton("");
-    buttons.append(d1);
-    QPushButton *g1 = new QPushButton("");
-    buttons.append(g1);
-}
-
-// -- void AddButtonsToBoard(QGridLayout*)
-// -- Adds all buttons in local vector to the gridLayout specified
-// TODO: Can definitely be done programatically, these were the correct positions
-// I found through debugging one row at a time
-void Board::AddButtonsToBoard(QGridLayout* gridLayout) {
-// Add all buttons created to the board in their correct positions
-    // addWidget(*Widget, row, column, rowspan, colspan)
-    // Row 7
-    gridLayout->addWidget(buttons[0], 0, 0, 1, 1);
-    gridLayout->addWidget(buttons[1], 0, 3, 1, 1);
-    gridLayout->addWidget(buttons[2], 0, 6, 1, 1);
-    // Row 6
-    gridLayout->addWidget(buttons[3], 1, 1, 1, 1);
-    gridLayout->addWidget(buttons[4], 1, 3, 1, 1);
-    gridLayout->addWidget(buttons[5], 1, 5, 1, 1);
-    // Row 5
-    gridLayout->addWidget(buttons[6], 2, 2, 1, 1);
-    gridLayout->addWidget(buttons[7], 2, 3, 1, 1);
-    gridLayout->addWidget(buttons[8], 2, 4, 1, 1);
-    // Row 4
-    gridLayout->addWidget(buttons[9], 3, 0, 1, 1);
-    gridLayout->addWidget(buttons[10], 3, 1, 1, 1);
-    gridLayout->addWidget(buttons[11], 3, 2, 1, 1);
-    gridLayout->addWidget(buttons[12], 3, 4, 1, 1);
-    gridLayout->addWidget(buttons[13], 3, 5, 1, 1);
-    gridLayout->addWidget(buttons[14], 3, 6, 1, 1);
-    // Row 3
-    gridLayout->addWidget(buttons[15], 4, 2, 1, 1);
-    gridLayout->addWidget(buttons[16], 4, 3, 1, 1);
-    gridLayout->addWidget(buttons[17], 4, 4, 1, 1);
-    // Row 2
-    gridLayout->addWidget(buttons[18], 5, 1, 1, 1);
-    gridLayout->addWidget(buttons[19], 5, 3, 1, 1);
-    gridLayout->addWidget(buttons[20], 5, 5, 1, 1);
-    // Row 1
-    gridLayout->addWidget(buttons[21], 6, 0, 1, 1);
-    gridLayout->addWidget(buttons[22], 6, 3, 1, 1);
-    gridLayout->addWidget(buttons[23], 6, 6, 1, 1);
+    return w;
 }
 
 // -- void HideButtons()
@@ -144,6 +56,55 @@ void Board::HideButtons() {
     for(auto b : buttons) {
         b->setStyleSheet("QPushButton {background-color: transparent;border: 0px}");
     }
+}
+
+// -- void CreateButtons()
+// -- Creates all necessary buttons for Nine Men's Morris and adds them to a privately created vector in Board
+void Board::CreateButtons() {
+
+    for (int i = 0; i < BOARD_ELEMENTS; i++)
+        buttons.append( new Button );
+}
+
+// -- void AddButtonsToBoard(QGridLayout*)
+// -- Adds all buttons in local vector to the gridLayout specified
+void Board::AddButtonsToBoard(QGridLayout* gridLayout) {
+    int buttonCount = 0;
+    int distance = HALF_BOARD_WIDTH;
+
+    // Top and Bottom half
+    for (int row = 0; row < HALF_BOARD_HEIGHT; row++) {
+        // 0 - 2
+        for (int col = row; col <= (row + (distance * 2)); col += distance) {
+            // 0 and 6
+                // 0, 3, 6
+            // 1 and 5
+                // 1, 3, 5
+            // 2 and 4
+                // 2, 3, 4
+            AddButtonToGridLayout(gridLayout, buttons[buttonCount], row, col, buttonCount);
+            AddButtonToGridLayout(gridLayout, buttons[buttonCount], BOARD_HEIGHT - row, col, buttonCount);
+        }
+
+        distance -= 1;
+    }
+
+    // Middle row
+    for (int col = 0; col < BOARD_WIDTH; col++) {
+        if (col != HALF_BOARD_WIDTH) {
+            AddButtonToGridLayout(gridLayout, buttons[buttonCount], HALF_BOARD_HEIGHT, col, buttonCount);
+        }
+    }
+}
+
+// -- addButtonToGridLayout()
+// Adds a button to the grid layout
+// Sets the co-ordinates of the button and also increments button count
+void Board::AddButtonToGridLayout(QGridLayout* gridLayout, Button* button, int row, int col, int &buttonCount) {
+    // addWidget(*Widget, row, column, rowspan, colspan)
+    gridLayout->addWidget(button, row, col, BUTTON_WIDTH, BUTTON_HEIGHT);
+    button->setCoords(row, col);
+    buttonCount++;
 }
 
 // TODO: Temporary function to test functionality and connect to buttons
@@ -161,5 +122,5 @@ void Board::ButtonPress() {
 // Otherwise we can hard code a function when it's designed
 void Board::ConnectButtons() {
     for (auto b: buttons)
-        connect(b, &QPushButton::clicked, this, &Board::ButtonPress);
+        connect(b, &Button::clicked, this, &Board::ButtonPress);
 }

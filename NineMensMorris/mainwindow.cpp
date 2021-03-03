@@ -11,7 +11,9 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+
     ui->setupUi(this);
+
     // Make sure the default state of the stackedWidget is on the 'home page'
     ui->stackedWidget->setCurrentIndex(HOME_PAGE);
 
@@ -28,7 +30,24 @@ MainWindow::~MainWindow()
 // test UI for board and auto-generated button layout
 void MainWindow::on_pushButton_clicked()
 {
-    // Set stackedWidget to display game state
-    // ui->stackedWidget->setCurrentIndex(GAME_PAGE);
     Board *board = new Board();
+
+    ui->stackedWidget->insertWidget(GAME_PAGE, board->CreateBoardGUI());
+    ui->stackedWidget->setCurrentIndex(GAME_PAGE);
+    ui->stackedWidget->show();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

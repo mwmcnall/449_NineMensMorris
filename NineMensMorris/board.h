@@ -4,18 +4,23 @@
 #include <QObject>
 #include <QPushButton>
 #include <QGridLayout>
+#include "button.h"
 
-class Board : public QObject
+class Board : public QWidget
 {
     Q_OBJECT
 public:
     // Variables
-    QVector<QPushButton*> buttons;
+    QVector<Button*> buttons;
     // Methods
-    explicit Board(QObject *parent = nullptr);
+    explicit Board(QWidget *parent = nullptr);
+
+    QWidget* CreateBoardGUI();
+
 private:
     void CreateButtons();
     void AddButtonsToBoard(QGridLayout*);
+    void AddButtonToGridLayout(QGridLayout*, Button*, int row, int col, int &buttonCount);
     void HideButtons();
     void ButtonPress();
     void ConnectButtons();
