@@ -8,7 +8,7 @@ class testBoard : public QObject
 {
     Q_OBJECT
 
-private slots:
+private Q_SLOTS:
     // setup / cleanup
     void init();
     void testBoardGUI();

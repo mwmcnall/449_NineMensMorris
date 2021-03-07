@@ -15,7 +15,7 @@ public:
     // Methods
     explicit Board(QWidget *parent = nullptr);
 
-    QWidget* CreateBoardGUI();
+    QWidget* CreateBoardGUI(bool showButtons = false);
 
 private:
     void CreateButtons();

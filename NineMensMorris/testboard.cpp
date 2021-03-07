@@ -1,4 +1,5 @@
 #include "testboard.h"
+#include "mainwindow.h"
 #include <QThread>
 
 void testBoard::init()
@@ -24,7 +25,8 @@ void testBoard::testBoardGUI()
 {
     Board *board = new Board();
 
-    board->CreateBoardGUI()->show();
+    // Set to show buttons for debugging purposes
+    board->CreateBoardGUI(true)->show();
 
     // GUI disappears too quickly w/out a sleep command
     QThread::sleep(4);

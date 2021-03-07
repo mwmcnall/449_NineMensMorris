@@ -18,7 +18,7 @@ Board::Board(QWidget *parent) : QWidget(parent)
 }
 
 // Board GUI is created
-QWidget* Board::CreateBoardGUI() {
+QWidget* Board::CreateBoardGUI(bool showButtons) {
     // Create a new Grid Layout
     QGridLayout *gridLayout = new QGridLayout;
 
@@ -29,7 +29,8 @@ QWidget* Board::CreateBoardGUI() {
     ConnectButtons();
 
     // NOTE: Set all buttons to be invisible, comment out to see button layout
-    HideButtons();
+    if (showButtons == false)
+        HideButtons();
 
     // Create a widget
     QWidget *w = new QWidget();
