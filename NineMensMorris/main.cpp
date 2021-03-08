@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 
     // NOTE: Set to TESTING to do all unit tests,
     // set to PRODUCTION to just run game
-    int status = TESTING;
+    int status = PRODUCTION;
 
     if (status == TESTING) {
     {

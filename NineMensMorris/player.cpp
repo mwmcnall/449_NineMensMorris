@@ -2,20 +2,16 @@
 
 player::player()
 {
-public:
-	//initialize numPieces at 9?
-	int numPieces;
-	bool flyStatus;
 
-	void placePiece() {
-		//if (valid move) TODO: write check for valid move
-		numPieces -= 1;
-	}
+}
 
-	void checkFly() {
-		if (numPieces == 3) {
-			flyStatus = true;
-		}
-	}
+void player::placePiece() {
+    //if (valid move) TODO: write check for valid move
+    this->numPieces -= 1;
+}
 
+void player::checkFly() {
+    if (this->numPieces == 3) {
+        this->flyStatus = true;
+    }
 }

@@ -1,18 +1,20 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <QObject>
 
-class player
+class player : QObject
 {
 // variables
 public:
-    int numPieces;
+    int numPieces = 9;
+    bool flyStatus = false;
 
 // methods
-    void placePiece()
-    void checkFly()
 public:
     player();
+    void placePiece();
+    void checkFly();
 };
 
 #endif // PLAYER_H
