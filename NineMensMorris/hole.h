@@ -6,11 +6,12 @@ class hole
 {
     // variables
 public:
-    int open;
+    int filled;
     int playerOwned;
 
     // methods
     void emptyHole();
+    void fillHole();
 public:
    hole();
 };

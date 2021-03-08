@@ -10,6 +10,7 @@ public:
 
 // methods
     void placePiece()
+    void checkFly()
 public:
     player();
 };
