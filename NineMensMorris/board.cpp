@@ -33,7 +33,7 @@ QWidget* Board::CreateBoardGUI(bool showButtons) {
         HideButtons();
 
     // Create a widget
-    QWidget *w = new QWidget();
+    w = new QWidget();
 
     // Set the grid layout as a main layout
     w->setLayout(gridLayout);

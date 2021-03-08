@@ -30,4 +30,6 @@ void testBoard::testBoardGUI()
 
     // GUI disappears too quickly w/out a sleep command
     QThread::sleep(4);
+
+    board->w->close();
 }

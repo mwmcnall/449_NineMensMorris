@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     // set to PRODUCTION to just run game
     int status = PRODUCTION;
 
-    if (status == TESTING) {
+    if (status == TESTING) { 
     {
         testBoard tb;
         status |= QTest::qExec(&tb);

@@ -12,6 +12,7 @@ class Board : public QWidget
 public:
     // Variables
     QVector<Button*> buttons;
+    QWidget *w;
     // Methods
     explicit Board(QWidget *parent = nullptr);
 

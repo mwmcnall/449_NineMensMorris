@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "board.h"
+#include "game.h"
 #include <QLabel>
 #include <QPixmap>
 
@@ -30,6 +31,11 @@ MainWindow::~MainWindow()
 // test UI for board and auto-generated button layout
 void MainWindow::on_pushButton_clicked()
 {
+
+    game *g = new game();
+
+    g->ChoosePlayerTurnGUI();
+
     Board *board = new Board();
 
     ui->stackedWidget->insertWidget(GAME_PAGE, board->CreateBoardGUI());

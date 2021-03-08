@@ -1,5 +1,4 @@
 #include "testgame.h"
-#include "game.h"
 #include <QThread>
 
 void testGame::init()
@@ -11,9 +10,18 @@ void testGame::testChooseFirstTurn()
 {
     char testTurn = 'B';
 
-    // Create game
-    game g;
+    game *g = new game;
 
-    g.setTurn(testTurn);
-    QCOMPARE(testTurn, g.getTurn());
+    g->setTurn(testTurn);
+    QCOMPARE(testTurn, g->getTurn());
+}
+
+void testGame::testChoosePlayerTurnGUI() {
+
+    game *g = new game;
+
+    g->ChoosePlayerTurnGUI();
+
+    // GUI disappears too quickly w/out a sleep command
+    QThread::sleep(4);
 }
