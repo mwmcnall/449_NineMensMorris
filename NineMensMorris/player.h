@@ -6,8 +6,10 @@ class player
 {
 // variables
 public:
+    int numPieces;
 
 // methods
+    void placePiece()
 public:
     player();
 };
