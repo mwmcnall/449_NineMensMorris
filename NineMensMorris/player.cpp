@@ -10,10 +10,6 @@ void player::placePiece() {
     this->numPieces -= 1;
 }
 
-void player::playerTurn() {
-
-}
-
 void player::checkFly() {
     if (this->numPieces == 3) {
         this->flyStatus = true;

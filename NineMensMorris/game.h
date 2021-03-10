@@ -6,13 +6,19 @@
 #include <QPushButton>
 #include <QHBoxLayout>
 
+#include "player.h"
+#include "board.h"
+
 class game : public QObject
 {
 // variables
 public:
-    int turn;
+    int turn = 1;
+    Board* b;
 private:
     QWidget *w;
+    player* playerOne;
+    player* playerTwo;
 
 // methods
 public:
@@ -20,11 +26,14 @@ public:
     void ChoosePlayerTurnGUI();
     int getTurn();
     void setTurn(int _turn);
+    void gameLoop();
 private:
     void ChooseBlackPieces();
     void ChooseWhitePieces();
     void ChoosePlayerTurnGUIClose();
-    void gameLoop();
+    void ButtonPress();
+    void ConnectButtons();
+    void incrementTurn();
 };
 
 #endif // GAME_H

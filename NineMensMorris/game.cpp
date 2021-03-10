@@ -4,8 +4,9 @@
 
 game::game()
 {
-    player* playerOne = new player;
-    player* playerTwo = new player;
+    playerOne = new player;
+    playerTwo = new player;
+    b = new Board;
 }
 
 void game::setTurn(int _turn) {
@@ -43,11 +44,12 @@ void game::ChooseBlackPieces() {
 
     ChoosePlayerTurnGUIClose();
 
-    while (setTurn == 1) {
+    /*while (setTurn == 1) {
         if (Board.ButtonPress() == 1) {
 
         }
     }
+    */
 
 }
 
@@ -62,6 +64,9 @@ void game::ChoosePlayerTurnGUIClose() {
 }
 
 void game::gameLoop() {
+
+    this->ConnectButtons();
+
    /* bool gameOver = false;
     int turnPlayer = this->getTurn();
     while (gameOver != true) {
@@ -78,7 +83,30 @@ void game::gameLoop() {
 
 }
 
+void game::ButtonPress() {
+    Button *button = qobject_cast<Button*>(sender());
+    if (button->filled == false) {
+        button->fillHole(this->turn);
+        button->activateImage(this->turn);
+        this->incrementTurn();
+    }
+}
 
+// -- void ConnectButtons()
+// -- Connects all buttons stored locally to a function
+// TODO: Should probably take a function in as an argument to assign (if possible)
+// Otherwise we can hard code a function when it's designed
+void game::ConnectButtons() {
+    for (auto b: this->b->buttons)
+        connect(b, &Button::clicked, this, &game::ButtonPress);
+}
+
+void game::incrementTurn() {
+    if (this->turn == 1)
+        this->turn = 2;
+    else
+        this->turn = 1;
+}
 
 
 

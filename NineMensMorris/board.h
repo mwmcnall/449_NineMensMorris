@@ -23,11 +23,6 @@ private:
     void AddButtonsToBoard(QGridLayout*);
     void AddButtonToGridLayout(QGridLayout*, Button*, int row, int col, int &buttonCount);
     void HideButtons();
-    int ButtonPress();
-    void ConnectButtons();
-
-signals:
-
 };
 
 #endif // BOARD_H

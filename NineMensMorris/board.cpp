@@ -26,7 +26,7 @@ QWidget* Board::CreateBoardGUI(bool showButtons) {
 
     AddButtonsToBoard(gridLayout);
 
-    ConnectButtons();
+    //ConnectButtons();
 
     // NOTE: Set all buttons to be invisible, comment out to see button layout
     if (showButtons == false)
@@ -106,24 +106,4 @@ void Board::AddButtonToGridLayout(QGridLayout* gridLayout, Button* button, int r
     gridLayout->addWidget(button, row, col, BUTTON_WIDTH, BUTTON_HEIGHT);
     button->setCoords(row, col);
     buttonCount++;
-}
-
-// TODO: Temporary function to test functionality and connect to buttons
-// Should probably be encapsulated in a Button class
-// TODO: Needs correct Button functionality
-int Board::ButtonPress() {
-    QMessageBox msgbox;
-    msgbox.setText("Button Pressed");
-    msgbox.exec();
-    return 1;
-    
-}
-
-// -- void ConnectButtons()
-// -- Connects all buttons stored locally to a function
-// TODO: Should probably take a function in as an argument to assign (if possible)
-// Otherwise we can hard code a function when it's designed
-void Board::ConnectButtons() {
-    for (auto b: buttons)
-        connect(b, &Button::clicked, this, &Button::fillHole(int 1);
 }

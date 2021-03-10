@@ -12,7 +12,6 @@ SOURCES += \
     board.cpp \
     button.cpp \
     game.cpp \
-    hole.cpp \
     main.cpp \
     mainwindow.cpp \
     player.cpp \
@@ -23,7 +22,6 @@ HEADERS += \
     board.h \
     button.h \
     game.h \
-    hole.h \
     mainwindow.h \
     player.h \
     testboard.h \

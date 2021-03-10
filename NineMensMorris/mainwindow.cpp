@@ -17,7 +17,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Make sure the default state of the stackedWidget is on the 'home page'
     ui->stackedWidget->setCurrentIndex(HOME_PAGE);
-
 }
 
 MainWindow::~MainWindow()
@@ -36,11 +35,13 @@ void MainWindow::on_pushButton_clicked()
 
     g->ChoosePlayerTurnGUI();
 
-    Board *board = new Board();
+    //Board *board = new Board();
 
-    ui->stackedWidget->insertWidget(GAME_PAGE, board->CreateBoardGUI());
+    ui->stackedWidget->insertWidget(GAME_PAGE, g->b->CreateBoardGUI());
     ui->stackedWidget->setCurrentIndex(GAME_PAGE);
     ui->stackedWidget->show();
+
+    g->gameLoop();
 }
 
 

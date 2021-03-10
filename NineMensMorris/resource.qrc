@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/img">
         <file>img/board.jpg</file>
+        <file>img/black dot.jpg</file>
+        <file>img/white dot.jpg</file>
     </qresource>
 </RCC>
