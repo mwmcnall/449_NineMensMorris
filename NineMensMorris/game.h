@@ -10,7 +10,7 @@ class game : public QObject
 {
 // variables
 public:
-    char turn;
+    int turn;
 private:
     QWidget *w;
 
@@ -18,12 +18,13 @@ private:
 public:
     game();
     void ChoosePlayerTurnGUI();
-    char getTurn();
-    void setTurn(char _turn);
+    int getTurn();
+    void setTurn(int _turn);
 private:
     void ChooseBlackPieces();
     void ChooseWhitePieces();
     void ChoosePlayerTurnGUIClose();
+    void gameLoop();
 };
 
 #endif // GAME_H

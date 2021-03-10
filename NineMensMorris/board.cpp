@@ -111,10 +111,12 @@ void Board::AddButtonToGridLayout(QGridLayout* gridLayout, Button* button, int r
 // TODO: Temporary function to test functionality and connect to buttons
 // Should probably be encapsulated in a Button class
 // TODO: Needs correct Button functionality
-void Board::ButtonPress() {
+int Board::ButtonPress() {
     QMessageBox msgbox;
     msgbox.setText("Button Pressed");
     msgbox.exec();
+    return 1;
+    
 }
 
 // -- void ConnectButtons()
@@ -123,5 +125,5 @@ void Board::ButtonPress() {
 // Otherwise we can hard code a function when it's designed
 void Board::ConnectButtons() {
     for (auto b: buttons)
-        connect(b, &Button::clicked, this, &Board::ButtonPress);
+        connect(b, &Button::clicked, this, &Button::fillHole(int 1);
 }

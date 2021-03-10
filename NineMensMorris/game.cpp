@@ -1,15 +1,18 @@
 #include "game.h"
+#include "board.h"
+#include "player.h"
 
 game::game()
 {
-
+    player* playerOne = new player;
+    player* playerTwo = new player;
 }
 
-void game::setTurn(char _turn) {
+void game::setTurn(int _turn) {
     this->turn = _turn;
 }
 
-char game::getTurn() {
+int game::getTurn() {
     return this->turn;
 }
 
@@ -36,13 +39,20 @@ void game::ChoosePlayerTurnGUI() {
 
 
 void game::ChooseBlackPieces() {
-    this->setTurn('B');
+    this->setTurn(1);
 
     ChoosePlayerTurnGUIClose();
+
+    while (setTurn == 1) {
+        if (Board.ButtonPress() == 1) {
+
+        }
+    }
+
 }
 
 void game::ChooseWhitePieces() {
-    this->setTurn('W');
+    this->setTurn(2);
 
     ChoosePlayerTurnGUIClose();
 }
@@ -51,7 +61,22 @@ void game::ChoosePlayerTurnGUIClose() {
     w->close();
 }
 
+void game::gameLoop() {
+   /* bool gameOver = false;
+    int turnPlayer = this->getTurn();
+    while (gameOver != true) {
+        //TODO initialize playerOne and playerTwo, add to references
+        if(turnPlayer == 1){
+            playerOne.playerTurn();
+        }
+        //TODO add end game check
+        //just so it breaks gameplay loop for now
+        gameOver = true;
+    }
+    */
 
+
+}
 
 
 
