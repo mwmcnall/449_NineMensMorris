@@ -23,3 +23,14 @@ int Button::getRow() {
 int Button::getCol() {
     return this->coords.column;
 }
+
+void Button::emptyHole() {
+    this->filled = 0;
+}
+
+void Button::fillHole(int player) {
+    this->filled = 1;
+    this->playerOwned = player;
+}
+
+
