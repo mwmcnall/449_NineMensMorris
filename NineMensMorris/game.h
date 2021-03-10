@@ -8,6 +8,7 @@
 
 #include "player.h"
 #include "board.h"
+#include "mainwindow.h"
 
 class game : public QObject
 {

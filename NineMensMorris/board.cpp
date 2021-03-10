@@ -26,8 +26,6 @@ QWidget* Board::CreateBoardGUI(bool showButtons) {
 
     AddButtonsToBoard(gridLayout);
 
-    //ConnectButtons();
-
     // NOTE: Set all buttons to be invisible, comment out to see button layout
     if (showButtons == false)
         HideButtons();
@@ -103,7 +101,32 @@ void Board::AddButtonsToBoard(QGridLayout* gridLayout) {
 // Sets the co-ordinates of the button and also increments button count
 void Board::AddButtonToGridLayout(QGridLayout* gridLayout, Button* button, int row, int col, int &buttonCount) {
     // addWidget(*Widget, row, column, rowspan, colspan)
+    button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     gridLayout->addWidget(button, row, col, BUTTON_WIDTH, BUTTON_HEIGHT);
     button->setCoords(row, col);
     buttonCount++;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

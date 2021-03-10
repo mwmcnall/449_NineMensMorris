@@ -4,9 +4,9 @@
 
 game::game()
 {
-    playerOne = new player;
-    playerTwo = new player;
-    b = new Board;
+    this->playerOne = new player;
+    this->playerTwo = new player;
+    this->b = new Board;
 }
 
 void game::setTurn(int _turn) {
@@ -85,6 +85,7 @@ void game::gameLoop() {
 
 void game::ButtonPress() {
     Button *button = qobject_cast<Button*>(sender());
+
     if (button->filled == false) {
         button->fillHole(this->turn);
         button->activateImage(this->turn);

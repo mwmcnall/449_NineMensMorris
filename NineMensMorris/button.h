@@ -2,6 +2,8 @@
 #define BUTTON_H
 
 #include <QPushButton>
+#include <QPixmap>
+#include <QLabel>
 
 struct coord
 {
