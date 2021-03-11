@@ -17,7 +17,7 @@ Board::Board(QWidget *parent) : QWidget(parent)
 {
 }
 
-// Board GUI is created
+// Board GUI is created, returns as a QWidget object
 QWidget* Board::CreateBoardGUI(bool showButtons) {
     // Create a new Grid Layout
     QGridLayout *gridLayout = new QGridLayout;
@@ -62,7 +62,7 @@ void Board::HideButtons() {
 void Board::CreateButtons() {
 
     for (int i = 0; i < BOARD_ELEMENTS; i++)
-        buttons.append( new Button );
+        buttons.append( new Hole );
 }
 
 // -- void AddButtonsToBoard(QGridLayout*)
@@ -99,8 +99,9 @@ void Board::AddButtonsToBoard(QGridLayout* gridLayout) {
 // -- addButtonToGridLayout()
 // Adds a button to the grid layout
 // Sets the co-ordinates of the button and also increments button count
-void Board::AddButtonToGridLayout(QGridLayout* gridLayout, Button* button, int row, int col, int &buttonCount) {
+void Board::AddButtonToGridLayout(QGridLayout* gridLayout, Hole* button, int row, int col, int &buttonCount) {
     // addWidget(*Widget, row, column, rowspan, colspan)
+    // Makes sure buttons take up as much space as possible
     button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     gridLayout->addWidget(button, row, col, BUTTON_WIDTH, BUTTON_HEIGHT);
     button->setCoords(row, col);

@@ -10,22 +10,24 @@ CONFIG += c++11
 
 SOURCES += \
     board.cpp \
-    button.cpp \
     game.cpp \
+    hole.cpp \
     main.cpp \
     mainwindow.cpp \
     player.cpp \
     testboard.cpp \
-    testgame.cpp
+    testgame.cpp \
+    testpieces.cpp
 
 HEADERS += \
     board.h \
-    button.h \
     game.h \
+    hole.h \
     mainwindow.h \
     player.h \
     testboard.h \
-    testgame.h
+    testgame.h \
+    testpieces.h
 
 FORMS += \
     mainwindow.ui

@@ -1,5 +1,5 @@
-#ifndef BUTTON_H
-#define BUTTON_H
+#ifndef HOLE_H
+#define HOLE_H
 
 #include <QPushButton>
 #include <QPixmap>
@@ -9,30 +9,30 @@ struct coord
 {
     int row;
     int column;
-    
+
 };
 
-class Button : public QPushButton
+class Hole : public QPushButton
 {
     Q_OBJECT
 
 private:
     coord coords;
+    void activateImage(int player);
 
 public:
     int filled = false;
     int playerOwned = 0;
-    Button();
-    Button(int row, int column);
+    Hole();
+    Hole(int row, int column);
     void setCoords(int row, int column);
     int getRow();
     int getCol();
     void emptyHole();
 
-    void activateImage(int player);
-//public slots:
+
     void fillHole(int player);
 
 };
 
-#endif // BUTTON_H
+#endif // HOLE_H

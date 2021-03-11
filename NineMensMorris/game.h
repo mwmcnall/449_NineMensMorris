@@ -28,6 +28,7 @@ public:
     int getTurn();
     void setTurn(int _turn);
     void gameLoop();
+    bool SimulateButtonPress(int x, int y);
 private:
     void ChooseBlackPieces();
     void ChooseWhitePieces();

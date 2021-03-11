@@ -4,14 +4,14 @@
 #include <QObject>
 #include <QPushButton>
 #include <QGridLayout>
-#include "button.h"
+#include "hole.h"
 
 class Board : public QWidget
 {
     Q_OBJECT
 public:
     // Variables
-    QVector<Button*> buttons;
+    QVector<Hole*> buttons;
     QWidget *w;
     // Methods
     explicit Board(QWidget *parent = nullptr);
@@ -21,7 +21,7 @@ public:
 private:
     void CreateButtons();
     void AddButtonsToBoard(QGridLayout*);
-    void AddButtonToGridLayout(QGridLayout*, Button*, int row, int col, int &buttonCount);
+    void AddButtonToGridLayout(QGridLayout*, Hole*, int row, int col, int &buttonCount);
     void HideButtons();
 };
 

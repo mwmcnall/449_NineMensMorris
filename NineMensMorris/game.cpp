@@ -17,6 +17,9 @@ int game::getTurn() {
     return this->turn;
 }
 
+// -- void ChoosePlayerTurnGUI()
+// -- Opens a window that asks the player to choose what color pieces they want
+// NOTE: 3/11, this is how we decide who goes first
 void game::ChoosePlayerTurnGUI() {
 
     w = new QWidget;
@@ -63,6 +66,7 @@ void game::ChoosePlayerTurnGUIClose() {
     w->close();
 }
 
+// TODO: Only a placeholder function for now, logic needs to be implemented
 void game::gameLoop() {
 
     this->ConnectButtons();
@@ -83,25 +87,42 @@ void game::gameLoop() {
 
 }
 
+// -- ButtonPress()
+// -- This is what activates what any Hole is clicked on the board
 void game::ButtonPress() {
-    Button *button = qobject_cast<Button*>(sender());
+    Hole *button = qobject_cast<Hole*>(sender());
 
     if (button->filled == false) {
         button->fillHole(this->turn);
-        button->activateImage(this->turn);
         this->incrementTurn();
     }
 }
 
-// -- void ConnectButtons()
-// -- Connects all buttons stored locally to a function
-// TODO: Should probably take a function in as an argument to assign (if possible)
-// Otherwise we can hard code a function when it's designed
-void game::ConnectButtons() {
-    for (auto b: this->b->buttons)
-        connect(b, &Button::clicked, this, &game::ButtonPress);
+// -- SimualteButtonPress(int, int)
+// -- Can simulate a button press based on a co-ordinate
+// -- returns true if 'pressed', false if not
+bool game::SimulateButtonPress(int x, int y) {
+    Hole *button = &this->b->buttons[x][y];
+
+    if (button->filled == false) {
+        button->fillHole(this->turn);
+        this->incrementTurn();
+        return true;
+    }
+
+    return false;
 }
 
+
+// -- void ConnectButtons()
+// -- Connects all buttons stored locally to a function
+void game::ConnectButtons() {
+    for (auto b: this->b->buttons)
+        connect(b, &Hole::clicked, this, &game::ButtonPress);
+}
+
+// -- incrementTurn()
+// -- Changes from one player's turn to another
 void game::incrementTurn() {
     if (this->turn == 1)
         this->turn = 2;

@@ -1,39 +1,46 @@
-#include "button.h"
+#include "hole.h"
 
-Button::Button()
+Hole::Hole()
 {
 
 }
 
-Button::Button(int row, int column) {
+// Initialize with coordinates set
+Hole::Hole(int row, int column) {
     this->coords.row = row;
     this->coords.column = column;
 }
 
-void Button::setCoords(int row, int column) {
+// Set coordinates
+void Hole::setCoords(int row, int column) {
     this->coords.row = row;
     this->coords.column = column;
 }
 
 
-int Button::getRow() {
+int Hole::getRow() {
     return this->coords.row;
 }
 
-int Button::getCol() {
+int Hole::getCol() {
     return this->coords.column;
 }
 
-void Button::emptyHole() {
+// Removes ownership and hides player image
+void Hole::emptyHole() {
     this->filled = 0;
+    this->setStyleSheet("QPushButton {background-color: transparent;border: 0px}");
 }
 
-void Button::fillHole(int player) {
+// Claims hole for player and activates player image
+void Hole::fillHole(int player) {
     this->filled = 1;
     this->playerOwned = player;
+    this->activateImage(player);
 }
 
-void Button::activateImage(int player) {
+// Changes button from transparent to visible
+void Hole::activateImage(int player) {
 
     if (player == 1) {
         this->setStyleSheet("border-image: url(:/img/img/black dot.jpg) 0 0 0 0 stretch stretch");

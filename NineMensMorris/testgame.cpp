@@ -8,7 +8,7 @@ void testGame::init()
 
 void testGame::testChooseFirstTurn()
 {
-    char testTurn = 'B';
+    int testTurn = 1;
 
     game *g = new game;
 
@@ -24,4 +24,5 @@ void testGame::testChoosePlayerTurnGUI() {
 
     // GUI disappears too quickly w/out a sleep command
     QThread::sleep(4);
+
 }
