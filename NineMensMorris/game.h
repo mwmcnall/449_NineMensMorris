@@ -36,6 +36,7 @@ private:
     void ButtonPress();
     void ConnectButtons();
     void incrementTurn();
+    bool checkMill(int x, int y);
 };
 
 #endif // GAME_H

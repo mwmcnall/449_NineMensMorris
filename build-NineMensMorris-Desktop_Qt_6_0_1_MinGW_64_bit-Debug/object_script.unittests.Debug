@@ -1,0 +1,16 @@
+debug/board.o
+debug/game.o
+debug/hole.o
+debug/main.o
+debug/mainwindow.o
+debug/player.o
+debug/testboard.o
+debug/testgame.o
+debug/testpieces.o
+debug/qrc_resource.o
+debug/moc_board.o
+debug/moc_hole.o
+debug/moc_mainwindow.o
+debug/moc_testboard.o
+debug/moc_testgame.o
+debug/moc_testpieces.o

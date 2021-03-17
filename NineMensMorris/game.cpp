@@ -92,8 +92,29 @@ void game::gameLoop() {
 void game::ButtonPress() {
     Hole *button = qobject_cast<Hole*>(sender());
 
+    //TODO logic should allow for moving pieces when there is no more pieces
+
     if (button->filled == false) {
-        button->fillHole(this->turn);
+        //places piece from player one pool
+        if(getTurn() == 1 && playerOne->numPieces >= 1){
+            playerOne->placePiece();
+            playerOne->checkPhase();
+            button->fillHole(this->turn);
+            //check for mill here
+
+        }
+
+        //places piece from player two pool
+        if(getTurn() == 2 && playerTwo->numPieces >= 1){
+            playerTwo->placePiece();
+            playerTwo->checkPhase();
+            button->fillHole(this->turn);
+            //check for mill here
+
+        }
+
+
+
         this->incrementTurn();
     }
 }
@@ -130,6 +151,13 @@ void game::incrementTurn() {
         this->turn = 1;
 }
 
+bool game::checkMill(int x, int y){
+    //pass in button col and row
+        //function for check row and check col
+    //check surrounding few for 3 in a row
+    //return if mill or not
+    return false;
+}
 
 
 

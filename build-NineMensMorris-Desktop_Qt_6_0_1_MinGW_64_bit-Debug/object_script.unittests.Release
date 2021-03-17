@@ -1,0 +1,16 @@
+release/board.o
+release/game.o
+release/hole.o
+release/main.o
+release/mainwindow.o
+release/player.o
+release/testboard.o
+release/testgame.o
+release/testpieces.o
+release/qrc_resource.o
+release/moc_board.o
+release/moc_hole.o
+release/moc_mainwindow.o
+release/moc_testboard.o
+release/moc_testgame.o
+release/moc_testpieces.o
