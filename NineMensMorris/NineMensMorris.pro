@@ -14,27 +14,20 @@ SOURCES += \
     hole.cpp \
     main.cpp \
     mainwindow.cpp \
-    player.cpp \
-    testboard.cpp \
-    testgame.cpp \
-    testpieces.cpp
+    player.cpp
 
 HEADERS += \
     board.h \
     game.h \
     hole.h \
     mainwindow.h \
-    player.h \
-    testboard.h \
-    testgame.h \
-    testpieces.h
+    player.h
 
 FORMS += \
     mainwindow.ui
 
 QT += testlib
 TEMPLATE = app
-TARGET = unittests
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
