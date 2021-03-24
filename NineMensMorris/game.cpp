@@ -91,32 +91,51 @@ void game::gameLoop() {
 // -- This is what activates what any Hole is clicked on the board
 void game::ButtonPress() {
     Hole *button = qobject_cast<Hole*>(sender());
-
+    playerOne->checkPhase();
+    playerTwo->checkPhase();
     //TODO logic should allow for moving pieces when there is no more pieces
 
-    if (button->filled == false) {
-        //places piece from player one pool
-        if(getTurn() == 1 && playerOne->numPieces >= 1){
-            playerOne->placePiece();
-            playerOne->checkPhase();
-            button->fillHole(this->turn);
-            //check for mill here
 
+       //IF PLAYER IS STILL IN PHASE 1
+    if((getTurn() == 1 && playerOne->playerPhase == 1) || (getTurn() == 2 && playerTwo->playerPhase == 1)){
+
+
+        if (button->filled == false) {
+            //places piece from player one pool
+            if(getTurn() == 1 && playerOne->numPieces >= 1){
+                playerOne->placePiece();
+                playerOne->checkPhase();
+                button->fillHole(this->turn);
+                //check for mill here
+
+            }
+
+            //places piece from player two pool
+            if(getTurn() == 2 && playerTwo->numPieces >= 1){
+                playerTwo->placePiece();
+                playerTwo->checkPhase();
+                button->fillHole(this->turn);
+                //check for mill here
+
+            }
+
+
+
+            this->incrementTurn();
         }
-
-        //places piece from player two pool
-        if(getTurn() == 2 && playerTwo->numPieces >= 1){
-            playerTwo->placePiece();
-            playerTwo->checkPhase();
-            button->fillHole(this->turn);
-            //check for mill here
-
-        }
-
-
-
-        this->incrementTurn();
     }
+
+
+    //PHASE 2 CHECKS
+   if((getTurn() == 1 && playerOne->playerPhase == 2) || (getTurn() == 2 && playerTwo->playerPhase == 2)){
+        //TODO phase 2 moving pieces
+   }
+
+   //PHASE 3 CHECKS
+   if((getTurn() == 1 && playerOne->playerPhase == 3) || (getTurn() == 2 && playerTwo->playerPhase == 3)){
+        //TODO phase 3 fly
+   }
+
 }
 
 // -- SimualteButtonPress(int, int)
