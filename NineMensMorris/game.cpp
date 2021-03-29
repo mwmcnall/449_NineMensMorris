@@ -7,6 +7,9 @@ game::game()
     this->playerOne = new player;
     this->playerTwo = new player;
     this->b = new Board;
+    this->game_gui = new game_GUI();
+
+    game_gui->ChoosePlayerTurnGUI();
 }
 
 void game::setTurn(int _turn) {
@@ -15,55 +18,6 @@ void game::setTurn(int _turn) {
 
 int game::getTurn() {
     return this->turn;
-}
-
-// -- void ChoosePlayerTurnGUI()
-// -- Opens a window that asks the player to choose what color pieces they want
-// NOTE: 3/11, this is how we decide who goes first
-void game::ChoosePlayerTurnGUI() {
-
-    w = new QWidget;
-    QHBoxLayout *hLayout = new QHBoxLayout(w);
-    QPushButton *blackButton = new QPushButton("Black");
-    QPushButton *whiteBUtton = new QPushButton("White");
-
-    connect(blackButton, &QPushButton::clicked, this, &game::ChooseBlackPieces);
-    connect(whiteBUtton, &QPushButton::clicked, this, &game::ChooseWhitePieces);
-
-    hLayout->addWidget(blackButton);
-    hLayout->addWidget(whiteBUtton);
-
-    w->setLayout(hLayout);
-    w->setFixedSize(400,200);
-    w->setWindowTitle("Choose Piece Color");
-
-    w->show();
-
-}
-
-
-void game::ChooseBlackPieces() {
-    this->setTurn(1);
-
-    ChoosePlayerTurnGUIClose();
-
-    /*while (setTurn == 1) {
-        if (Board.ButtonPress() == 1) {
-
-        }
-    }
-    */
-
-}
-
-void game::ChooseWhitePieces() {
-    this->setTurn(2);
-
-    ChoosePlayerTurnGUIClose();
-}
-
-void game::ChoosePlayerTurnGUIClose() {
-    w->close();
 }
 
 // TODO: Only a placeholder function for now, logic needs to be implemented
@@ -90,6 +44,12 @@ void game::gameLoop() {
 // -- ButtonPress()
 // -- This is what activates what any Hole is clicked on the board
 void game::ButtonPress() {
+
+    // TODO: Inefficient. How to wait to create board until player color is chosen in GUI?
+    // If first turn, set turn chosen in gui
+    if (this->getTurn() == -1)
+        this->setTurn(game_gui->getTurn());
+
     Hole *button = qobject_cast<Hole*>(sender());
 
     //TODO logic should allow for moving pieces when there is no more pieces
@@ -101,7 +61,7 @@ void game::ButtonPress() {
             playerOne->checkPhase();
             button->fillHole(this->turn);
             //check for mill here
-
+            // TEST CODE DELETE LATER
         }
 
         //places piece from player two pool
@@ -151,15 +111,98 @@ void game::incrementTurn() {
         this->turn = 1;
 }
 
-bool game::checkMill(int x, int y){
-    //pass in button col and row
-        //function for check row and check col
-    //check surrounding few for 3 in a row
-    //return if mill or not
+bool game::checkMill(Hole *hole){
+
+    if (checkVerticalMill(hole) || checkHorizontalMill(hole))
+        return true;
+
     return false;
 }
 
+bool game::checkVerticalMill(Hole *hole) {
 
+    return false;
+}
+
+bool game::checkHorizontalMill(Hole *hole) {
+
+
+    return false;
+}
+
+bool game::isHoleFilled(int row, int col) {
+
+    for (auto& hole : this->b->buttons) {
+        if ((hole->getRow() == row) && (hole->getCol() == col))
+            return hole->filled;
+    }
+
+    // This means the pre-condition of sending in a valid location was not kept. Exit program.
+    exit(1);
+}
+
+// All isValidHoleMove functions test:
+    // If a particular direction is within bounds
+    // Returns whether or not the hole in that direction is available
+bool game::isValidHoleMoveUp(int row_check, int col_check) {
+
+    // Middle row is exception
+    if (row_check == HALF_BOARD_HEIGHT)
+        col_check += 1;
+    else
+        col_check += HALF_BOARD_HEIGHT - (row_check % HALF_BOARD_HEIGHT);
+
+    // Outside of board? Always false
+    if (col_check > BOARD_HEIGHT)
+        return false;
+
+    return !isHoleFilled(row_check, col_check);
+}
+
+bool game::isValidHoleMoveDown(int row_check, int col_check) {
+
+    // Middle row is exception
+    if (row_check == HALF_BOARD_HEIGHT)
+        col_check -= 1;
+    else
+        col_check -= HALF_BOARD_HEIGHT - (row_check % HALF_BOARD_HEIGHT);
+
+    // Outside of board? Always false
+    if (col_check < 0)
+        return false;
+
+    return !isHoleFilled(row_check, col_check);
+}
+
+bool game::isValidHoleMoveLeft(int row_check, int col_check) {
+
+    // Middle col is exception
+    if (col_check == HALF_BOARD_WIDTH)
+        row_check -= 1;
+    else
+        row_check -= HALF_BOARD_WIDTH - (col_check % HALF_BOARD_WIDTH);
+
+    // Outside of board? Always false
+    if (row_check < 0)
+        return false;
+
+    return !isHoleFilled(row_check, col_check);
+}
+
+bool game::isValidHoleMoveRight(int row_check, int col_check) {
+
+    // Middle col is exception
+    if (col_check == HALF_BOARD_WIDTH)
+        row_check += 1;
+    else
+        row_check += HALF_BOARD_WIDTH - (col_check % HALF_BOARD_WIDTH);
+
+    // Outside of board? Always false
+    if (row_check > BOARD_WIDTH)
+        return false;
+
+    return !isHoleFilled(row_check, col_check);;
+}
 
 
 

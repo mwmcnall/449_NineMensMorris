@@ -73,4 +73,3 @@ void Hole::activateImage(int player) {
 
 
 
-

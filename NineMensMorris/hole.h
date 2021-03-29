@@ -9,7 +9,6 @@ struct coord
 {
     int row;
     int column;
-
 };
 
 class Hole : public QPushButton
@@ -19,6 +18,7 @@ class Hole : public QPushButton
 private:
     coord coords;
     void activateImage(int player);
+    std::vector<int> validLocations(int row_or_col);
 
 public:
     int filled = false;
@@ -29,8 +29,6 @@ public:
     int getRow();
     int getCol();
     void emptyHole();
-
-
     void fillHole(int player);
 
 };

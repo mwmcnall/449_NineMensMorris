@@ -1,17 +1,6 @@
 #include "board.h"
 #include <QMessageBox>
 
-#define BUTTON_WIDTH 1
-#define BUTTON_HEIGHT 1
-#define BOARD_WIDTH 7
-// 3 for this case
-#define HALF_BOARD_WIDTH int((BOARD_WIDTH -1) / 2)
-#define BOARD_HEIGHT 7
-// 3 for this case
-#define HALF_BOARD_HEIGHT int((BOARD_HEIGHT -1) / 2)
-// 24 for this case
-#define BOARD_ELEMENTS int(((BOARD_WIDTH * BOARD_HEIGHT)-1)/2)
-
 // Initializer
 Board::Board(QWidget *parent) : QWidget(parent)
 {
@@ -82,7 +71,7 @@ void Board::AddButtonsToBoard(QGridLayout* gridLayout) {
             // 2 and 4
                 // 2, 3, 4
             AddButtonToGridLayout(gridLayout, buttons[buttonCount], row, col, buttonCount);
-            AddButtonToGridLayout(gridLayout, buttons[buttonCount], BOARD_HEIGHT - row, col, buttonCount);
+            AddButtonToGridLayout(gridLayout, buttons[buttonCount], BOARD_HEIGHT - row - 1, col, buttonCount);
         }
 
         distance -= 1;

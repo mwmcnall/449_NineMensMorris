@@ -6,6 +6,17 @@
 #include <QGridLayout>
 #include "hole.h"
 
+#define BUTTON_WIDTH 1
+#define BUTTON_HEIGHT 1
+#define BOARD_WIDTH 7
+// 3 for this case
+#define HALF_BOARD_WIDTH int((BOARD_WIDTH -1) / 2)
+#define BOARD_HEIGHT 7
+// 3 for this case
+#define HALF_BOARD_HEIGHT int((BOARD_HEIGHT -1) / 2)
+// 24 for this case
+#define BOARD_ELEMENTS int(((BOARD_WIDTH * BOARD_HEIGHT)-1)/2)
+
 class Board : public QWidget
 {
     Q_OBJECT
