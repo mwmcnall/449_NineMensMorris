@@ -22,7 +22,7 @@ QWidget* player_GUI::CreatePlayerGUI(int player_color) {
     verticalLayout->addWidget(title);
     // Picture of color
     // Number of pieces
-    QLabel *pieces = new QLabel("9");
+    pieces = new QLabel("9");
     pieces->setFont(f);
     pieces->setAlignment(Qt::AlignCenter);
     verticalLayout->addWidget(pieces);
@@ -36,6 +36,7 @@ QWidget* player_GUI::CreatePlayerGUI(int player_color) {
     return w;
 }
 
-void player_GUI::UpdatePlayerGUI() {
+void player_GUI::UpdatePlayerGUI(int numPieces) {
     // Update number of pieces
+    pieces->setText(QString::number(numPieces));
 }

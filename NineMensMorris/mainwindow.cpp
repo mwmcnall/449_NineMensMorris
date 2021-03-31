@@ -37,13 +37,12 @@ void MainWindow::on_pushButton_clicked()
 
 
     game *g = new game();
-    player_GUI *p_gui = new player_GUI();
 
     QHBoxLayout *horizontalGameLayout = new QHBoxLayout();
 
-    horizontalGameLayout->addWidget(p_gui->CreatePlayerGUI(1));
+    horizontalGameLayout->addWidget(g->playerOneGUI->CreatePlayerGUI(1));
     horizontalGameLayout->addWidget(g->b->CreateBoardGUI());
-    horizontalGameLayout->addWidget(p_gui->CreatePlayerGUI(2));
+    horizontalGameLayout->addWidget(g->playerTwoGUI->CreatePlayerGUI(2));
 
     // Create a widget
     QWidget* w = new QWidget();

@@ -12,6 +12,8 @@ class game : public QObject
 // variables
 public:
     Board* b;
+    player_GUI* playerOneGUI;
+    player_GUI* playerTwoGUI;
 private:
     int turn = -1;
     player* playerOne;

@@ -8,6 +8,8 @@ game::game()
     this->playerTwo = new player;
     this->b = new Board;
     this->game_gui = new game_GUI();
+    this->playerOneGUI = new player_GUI();
+    this->playerTwoGUI = new player_GUI();
 
     game_gui->ChoosePlayerTurnGUI();
 }
@@ -63,6 +65,7 @@ void game::ButtonPress() {
             //places piece from player one pool
             if(getTurn() == 1 && playerOne->numPieces >= 1){
                 playerOne->placePiece();
+                playerOneGUI->UpdatePlayerGUI(playerOne->numPieces);
                 playerOne->checkPhase();
                 button->fillHole(this->turn);
                 //check for mill here
@@ -70,8 +73,9 @@ void game::ButtonPress() {
             }
 
             //places piece from player two pool
-            if(getTurn() == 2 && playerTwo->numPieces >= 1){
+            else if(getTurn() == 2 && playerTwo->numPieces >= 1){
                 playerTwo->placePiece();
+                playerTwoGUI->UpdatePlayerGUI(playerTwo->numPieces);
                 playerTwo->checkPhase();
                 button->fillHole(this->turn);
                 //check for mill here

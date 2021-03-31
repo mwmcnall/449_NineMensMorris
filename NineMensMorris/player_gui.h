@@ -10,9 +10,10 @@ class player_GUI : public QWidget
 {
 public:
     QWidget *w;
+    QLabel *pieces;
     player_GUI();
     QWidget* CreatePlayerGUI(int player_color);
-    void UpdatePlayerGUI();
+    void UpdatePlayerGUI(int numPieces);
 };
 
 #endif // PLAYER_GUI_H
