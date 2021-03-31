@@ -50,7 +50,12 @@ void game::ButtonPress() {
     //TODO logic should allow for moving pieces when there is no more pieces
 
 
-       //IF PLAYER IS STILL IN PHASE 1
+    // TODO: Need to figure out how to set the turn via the GUI before the board is built
+    // Otherwise we need a check like this, which is inefficient
+    if (this->turn == -1)
+        setTurn(this->game_gui->getTurn());
+
+    //IF PLAYER IS STILL IN PHASE 1
     if((getTurn() == 1 && playerOne->playerPhase == 1) || (getTurn() == 2 && playerTwo->playerPhase == 1)){
 
 
