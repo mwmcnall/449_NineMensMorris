@@ -1,6 +1,8 @@
 #include "game.h"
 #include "board.h"
 #include "player.h"
+#include<QDebug>
+#include<QtMath>
 
 game::game()
 {
@@ -68,7 +70,10 @@ void game::ButtonPress() {
                 playerOneGUI->UpdatePlayerGUI(playerOne->numPieces);
                 playerOne->checkPhase();
                 button->fillHole(this->turn);
-                //check for mill here
+
+                if(checkMill(button)){
+                    qInfo() << "You got mill";
+                }
 
             }
 
@@ -79,6 +84,10 @@ void game::ButtonPress() {
                 playerTwo->checkPhase();
                 button->fillHole(this->turn);
                 //check for mill here
+                //Put mill check at end
+                if(checkMill(button)){
+                    qInfo() << "You got mill";
+                }
 
             }
 
@@ -96,6 +105,8 @@ void game::ButtonPress() {
    if((getTurn() == 1 && playerOne->playerPhase == 3) || (getTurn() == 2 && playerTwo->playerPhase == 3)){
         //TODO phase 3 fly
    }
+
+
 
 }
 
@@ -133,18 +144,69 @@ void game::incrementTurn() {
 
 bool game::checkMill(Hole *hole){
 
-    if (checkVerticalMill(hole) || checkHorizontalMill(hole))
+    if (checkVerticalMill(hole) || checkHorizontalMill(hole)) {
+        removePiece();
         return true;
-
+    }
     return false;
 }
 
 bool game::checkVerticalMill(Hole *hole) {
+    int vertCord = hole->getCol();
+    int horCord = hole->getRow();
+
+    if(!(vertCord==3)){
+        if(isHoleFilled(qFabs(6-vertCord),vertCord) && isHoleFilled(3,vertCord) && isHoleFilled(vertCord,vertCord)){
+            return true;
+        }
+
+
+    }
+    else if(horCord > 3){
+        if(isHoleFilled(6,vertCord) && isHoleFilled(5,vertCord) && isHoleFilled(4,vertCord)){
+
+            return true;
+        }
+
+    }
+    else if(horCord < 3){
+        if(isHoleFilled(2,vertCord) && isHoleFilled(1,vertCord) && isHoleFilled(0,vertCord)){
+
+            return true;
+        }
+
+    }
+
 
     return false;
 }
 
 bool game::checkHorizontalMill(Hole *hole) {
+    int vertCord = hole->getCol();
+    int horCord = hole->getRow();
+
+
+    if(!(horCord==3)){
+        if(isHoleFilled(horCord ,qFabs(6-horCord)) && isHoleFilled(horCord,3) && isHoleFilled(horCord,horCord)){
+
+            return true;
+        }
+    }
+    else if(vertCord > 3){
+        if(isHoleFilled(horCord,6) && isHoleFilled(horCord,5) && isHoleFilled(horCord,4)){
+
+            return true;
+        }
+
+    }
+    else if(vertCord < 3){
+        if(isHoleFilled(horCord,2) && isHoleFilled(horCord,1) && isHoleFilled(horCord,0)){
+
+            return true;
+        }
+
+    }
+
 
 
     return false;
@@ -222,6 +284,11 @@ bool game::isValidHoleMoveRight(int row_check, int col_check) {
         return false;
 
     return !isHoleFilled(row_check, col_check);;
+}
+
+void game::removePiece(){
+    //you get to remove a piece
+
 }
 
 

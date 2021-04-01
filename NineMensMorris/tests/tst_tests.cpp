@@ -20,6 +20,7 @@ private slots:
     void testDoNOTPlacePiece();
     void testChooseFirstTurn();
     void testBoardGUI();
+    void testMill();
 };
 
 tests::tests()
@@ -101,6 +102,23 @@ void tests::testBoardGUI()
 
     board->w->close();
 }
+//Test Mill
+void tests::testMill()
+{
+    game *g = new game;
+    g->b->CreateBoardGUI();
+    g->gameLoop();
+    g->setTurn(1);
+    g->SimulateButtonPress(0, 0);
+    Hole* button1 = &g->b->buttons[0][0];
+    Hole* button2 = &g->b->buttons[0][3];
+    Hole* button3 = &g->b->buttons[0][6];
+
+
+
+}
+
+//Test Remove
 
 QTEST_MAIN(tests)
 #include "tst_tests.moc"

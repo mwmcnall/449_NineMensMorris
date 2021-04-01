@@ -17,14 +17,16 @@ SOURCES +=  \
     $$INCDIR/game.cpp \
     $$INCDIR/game_gui.cpp \
     $$INCDIR/player.cpp \
-    $$INCDIR/hole.cpp
+    $$INCDIR/hole.cpp \
+    $$INCDIR/player_gui.cpp
 
 HEADERS +=  \
     $$INCDIR/board.h \
     $$INCDIR/game.h \
     $$INCDIR/game_gui.h \
     $$INCDIR/player.h \
-    $$INCDIR/hole.h
+    $$INCDIR/hole.h \
+    $$INCDIR/player_gui.h
 
 RESOURCES += \
     $$INCDIR\resource.qrc

@@ -41,6 +41,8 @@ private:
     bool isValidHoleMoveLeft(int, int);
     bool isValidHoleMoveRight(int, int);
     bool isHoleFilled(int row, int col);
+    // Remove Piece
+    void removePiece();
 };
 
 #endif // GAME_H
