@@ -1,8 +1,8 @@
 #include "player.h"
 
-player::player()
+player::player(int turn_)
 {
-
+    this->turn = turn_;
 }
 
 void player::placePiece() {

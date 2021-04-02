@@ -6,8 +6,8 @@
 
 game::game()
 {
-    this->playerOne = new player;
-    this->playerTwo = new player;
+    this->playerOne = new player(1);
+    this->playerTwo = new player(2);
     this->b = new Board;
     this->game_gui = new game_GUI();
     this->playerOneGUI = new player_GUI();
@@ -29,20 +29,6 @@ void game::gameLoop() {
 
     this->ConnectButtons();
 
-   /* bool gameOver = false;
-    int turnPlayer = this->getTurn();
-    while (gameOver != true) {
-        //TODO initialize playerOne and playerTwo, add to references
-        if(turnPlayer == 1){
-            playerOne.playerTurn();
-        }
-        //TODO add end game check
-        //just so it breaks gameplay loop for now
-        gameOver = true;
-    }
-    */
-
-
 }
 
 // -- ButtonPress()
@@ -53,61 +39,57 @@ void game::ButtonPress() {
     playerTwo->checkPhase();
     //TODO logic should allow for moving pieces when there is no more pieces
 
-
     // TODO: Need to figure out how to set the turn via the GUI before the board is built
     // Otherwise we need a check like this, which is inefficient
-    if (this->turn == -1)
+    if (this->turn == -1) {
         setTurn(this->game_gui->getTurn());
+        setActivePlayer(this->game_gui->getTurn());
+    }
 
-    //IF PLAYER IS STILL IN PHASE 1
-    if((getTurn() == 1 && playerOne->playerPhase == 1) || (getTurn() == 2 && playerTwo->playerPhase == 1)){
-
-
+    // PHASE 1
+    if (this->activePlayer->playerPhase == 1) {
         if (button->filled == false) {
             //places piece from player one pool
-            if(getTurn() == 1 && playerOne->numPieces >= 1){
-                playerOne->placePiece();
-                playerOneGUI->UpdatePlayerGUI(playerOne->numPieces);
-                playerOne->checkPhase();
+            if(this->activePlayer->numPieces >= 1){
+                this->activePlayer->placePiece();
+                this->activePlayer_GUI->UpdatePlayerGUI(this->activePlayer->numPieces);
+                this->activePlayer->checkPhase();
                 button->fillHole(this->turn);
 
                 if(checkMill(button)){
                     qInfo() << "You got mill";
                 }
-
+                this->incrementTurn();
             }
-
-            //places piece from player two pool
-            else if(getTurn() == 2 && playerTwo->numPieces >= 1){
-                playerTwo->placePiece();
-                playerTwoGUI->UpdatePlayerGUI(playerTwo->numPieces);
-                playerTwo->checkPhase();
-                button->fillHole(this->turn);
-                //check for mill here
-                //Put mill check at end
-                if(checkMill(button)){
-                    qInfo() << "You got mill";
-                }
-
-            }
-
-            this->incrementTurn();
         }
     }
 
-
     //PHASE 2 CHECKS
-   if((getTurn() == 1 && playerOne->playerPhase == 2) || (getTurn() == 2 && playerTwo->playerPhase == 2)){
+   if(this->activePlayer->playerPhase == 2){
         //TODO phase 2 moving pieces
    }
 
    //PHASE 3 CHECKS
-   if((getTurn() == 1 && playerOne->playerPhase == 3) || (getTurn() == 2 && playerTwo->playerPhase == 3)){
+   if(this->activePlayer->playerPhase == 3){
         //TODO phase 3 fly
    }
 
 
 
+}
+
+
+void game::setActivePlayer(int turn) {
+    if (turn == 1) {
+        this->activePlayer = this->playerOne;
+        this->activePlayer_GUI = this->playerOneGUI;
+    }
+    else if (turn == 2) {
+        this->activePlayer = this->playerTwo;
+        this->activePlayer_GUI = this->playerTwoGUI;
+    }
+    else
+        exit(1);
 }
 
 // -- SimualteButtonPress(int, int)
@@ -136,10 +118,16 @@ void game::ConnectButtons() {
 // -- incrementTurn()
 // -- Changes from one player's turn to another
 void game::incrementTurn() {
-    if (this->turn == 1)
+    if (this->turn == 1) {
         this->turn = 2;
-    else
+        this->activePlayer = playerTwo;
+        this->activePlayer_GUI = playerTwoGUI;
+    }
+    else {
         this->turn = 1;
+        this->activePlayer = playerOne;
+        this->activePlayer_GUI = playerOneGUI;
+    }
 }
 
 bool game::checkMill(Hole *hole){
@@ -154,23 +142,31 @@ bool game::checkMill(Hole *hole){
 bool game::checkVerticalMill(Hole *hole) {
     int vertCord = hole->getCol();
     int horCord = hole->getRow();
+    int holeColor = hole->playerOwned;
 
     if(!(vertCord==3)){
-        if(isHoleFilled(qFabs(6-vertCord),vertCord) && isHoleFilled(3,vertCord) && isHoleFilled(vertCord,vertCord)){
+        if(isHoleFilled(qFabs(6-vertCord),vertCord, holeColor) &&
+                isHoleFilled(3,vertCord, holeColor) &&
+                isHoleFilled(vertCord,vertCord, holeColor)){
+
             return true;
         }
 
 
     }
     else if(horCord > 3){
-        if(isHoleFilled(6,vertCord) && isHoleFilled(5,vertCord) && isHoleFilled(4,vertCord)){
+        if(isHoleFilled(6,vertCord, holeColor) &&
+                isHoleFilled(5,vertCord, holeColor) &&
+                isHoleFilled(4,vertCord, holeColor)){
 
             return true;
         }
 
     }
     else if(horCord < 3){
-        if(isHoleFilled(2,vertCord) && isHoleFilled(1,vertCord) && isHoleFilled(0,vertCord)){
+        if(isHoleFilled(2,vertCord, holeColor) &&
+                isHoleFilled(1,vertCord, holeColor) &&
+                isHoleFilled(0,vertCord, holeColor)){
 
             return true;
         }
@@ -184,23 +180,29 @@ bool game::checkVerticalMill(Hole *hole) {
 bool game::checkHorizontalMill(Hole *hole) {
     int vertCord = hole->getCol();
     int horCord = hole->getRow();
-
+    int holeColor = hole->playerOwned;
 
     if(!(horCord==3)){
-        if(isHoleFilled(horCord ,qFabs(6-horCord)) && isHoleFilled(horCord,3) && isHoleFilled(horCord,horCord)){
+        if(isHoleFilled(horCord ,qFabs(6-horCord), holeColor) &&
+                isHoleFilled(horCord,3, holeColor) &&
+                isHoleFilled(horCord,horCord, holeColor)){
 
             return true;
         }
     }
     else if(vertCord > 3){
-        if(isHoleFilled(horCord,6) && isHoleFilled(horCord,5) && isHoleFilled(horCord,4)){
+        if(isHoleFilled(horCord,6, holeColor) &&
+                isHoleFilled(horCord,5, holeColor) &&
+                isHoleFilled(horCord,4, holeColor)){
 
             return true;
         }
 
     }
     else if(vertCord < 3){
-        if(isHoleFilled(horCord,2) && isHoleFilled(horCord,1) && isHoleFilled(horCord,0)){
+        if(isHoleFilled(horCord,2, holeColor) &&
+                isHoleFilled(horCord,1, holeColor) &&
+                isHoleFilled(horCord,0, holeColor)){
 
             return true;
         }
@@ -217,6 +219,21 @@ bool game::isHoleFilled(int row, int col) {
     for (auto& hole : this->b->buttons) {
         if ((hole->getRow() == row) && (hole->getCol() == col))
             return hole->filled;
+    }
+
+    // This means the pre-condition of sending in a valid location was not kept. Exit program.
+    exit(1);
+}
+
+bool game::isHoleFilled(int row, int col, int playerTurn) {
+
+    for (auto& hole : this->b->buttons) {
+        if ((hole->getRow() == row) && (hole->getCol() == col)) {
+            if (hole->playerOwned == playerTurn)
+                return true;
+            else
+                return false;
+        }
     }
 
     // This means the pre-condition of sending in a valid location was not kept. Exit program.
@@ -286,6 +303,7 @@ bool game::isValidHoleMoveRight(int row_check, int col_check) {
     return !isHoleFilled(row_check, col_check);;
 }
 
+// TODO: Function still needs to be implemented
 void game::removePiece(){
     //you get to remove a piece
 

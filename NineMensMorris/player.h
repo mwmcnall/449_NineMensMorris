@@ -11,10 +11,11 @@ public:
     int numPieces = 9;
     int totalPieces = 9;
     bool flyStatus = false;
+    int turn = -1;
 
 // methods
 public:
-    player();
+    player(int turn_);
     void placePiece();
     void checkPhase();
 

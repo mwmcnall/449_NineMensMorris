@@ -18,6 +18,8 @@ private:
     int turn = -1;
     player* playerOne;
     player* playerTwo;
+    player* activePlayer;
+    player_GUI* activePlayer_GUI;
     game_GUI* game_gui;
 
 // methods
@@ -28,6 +30,7 @@ public:
     void gameLoop();
     bool SimulateButtonPress(int x, int y);
 private:
+    void setActivePlayer(int turn);
     void ButtonPress();
     void ConnectButtons();
     void incrementTurn();
@@ -41,6 +44,7 @@ private:
     bool isValidHoleMoveLeft(int, int);
     bool isValidHoleMoveRight(int, int);
     bool isHoleFilled(int row, int col);
+    bool isHoleFilled(int row, int col, int playerTurn);
     // Remove Piece
     void removePiece();
 };

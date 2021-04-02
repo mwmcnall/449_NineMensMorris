@@ -18,7 +18,6 @@ class Hole : public QPushButton
 private:
     coord coords;
     void activateImage(int player);
-    std::vector<int> validLocations(int row_or_col);
 
 public:
     int filled = false;
