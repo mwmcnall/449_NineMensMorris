@@ -6,6 +6,7 @@
 #include "mainwindow.h"
 #include "game_gui.h"
 #include "player_gui.h"
+#include "logwindow.h"
 
 class game : public QObject
 {
@@ -14,6 +15,7 @@ public:
     Board* b;
     player_GUI* playerOneGUI;
     player_GUI* playerTwoGUI;
+    LogWindow *log = new LogWindow();
 private:
     int turn = -1;
     player* playerOne;
@@ -21,6 +23,7 @@ private:
     player* activePlayer;
     player_GUI* activePlayer_GUI;
     game_GUI* game_gui;
+    bool playerMoving = false;
 
 // methods
 public:

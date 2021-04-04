@@ -102,6 +102,7 @@ void tests::testBoardGUI()
 
     board->w->close();
 }
+
 //Test Mill
 void tests::testMill()
 {
@@ -113,8 +114,6 @@ void tests::testMill()
     Hole* button1 = &g->b->buttons[0][0];
     Hole* button2 = &g->b->buttons[0][3];
     Hole* button3 = &g->b->buttons[0][6];
-
-
 
 }
 

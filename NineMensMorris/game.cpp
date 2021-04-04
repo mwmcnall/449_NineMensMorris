@@ -57,6 +57,7 @@ void game::ButtonPress() {
                 button->fillHole(this->turn);
 
                 if(checkMill(button)){
+                    this->log->appendMessage("You got mill!");
                     qInfo() << "You got mill";
                 }
                 this->incrementTurn();
@@ -67,6 +68,23 @@ void game::ButtonPress() {
     //PHASE 2 CHECKS
    if(this->activePlayer->playerPhase == 2){
         //TODO phase 2 moving pieces
+       if (button->filled == false) {
+           // If there are any valid spots to move, set playerMoving to true
+           // Otherwise do nothing
+           playerMoving = true;
+       } else if ((playerMoving == true) && (button->filled == true)) {
+           // Is the spot clicked a valid move?
+
+           // If so
+                // Clear current spot
+                // 'Move' to new spot
+                // Check mill?
+                // set playerMoving False
+           // If not
+                //
+
+           playerMoving = false;
+       }
    }
 
    //PHASE 3 CHECKS
@@ -122,11 +140,13 @@ void game::incrementTurn() {
         this->turn = 2;
         this->activePlayer = playerTwo;
         this->activePlayer_GUI = playerTwoGUI;
+        this->log->appendMessage("--> White's Turn!");
     }
     else {
         this->turn = 1;
         this->activePlayer = playerOne;
         this->activePlayer_GUI = playerOneGUI;
+        this->log->appendMessage("--> Black's Turn!");
     }
 }
 

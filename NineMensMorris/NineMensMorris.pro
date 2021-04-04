@@ -13,6 +13,7 @@ SOURCES += \
     game.cpp \
     game_gui.cpp \
     hole.cpp \
+    logwindow.cpp \
     main.cpp \
     mainwindow.cpp \
     player.cpp \
@@ -23,6 +24,7 @@ HEADERS += \
     game.h \
     game_gui.h \
     hole.h \
+    logwindow.h \
     mainwindow.h \
     player.h \
     player_gui.h

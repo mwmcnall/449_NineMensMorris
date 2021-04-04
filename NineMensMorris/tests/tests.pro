@@ -18,6 +18,7 @@ SOURCES +=  \
     $$INCDIR/game_gui.cpp \
     $$INCDIR/player.cpp \
     $$INCDIR/hole.cpp \
+    $$INCDIR/logwindow.cpp \
     $$INCDIR/player_gui.cpp
 
 HEADERS +=  \
@@ -26,6 +27,7 @@ HEADERS +=  \
     $$INCDIR/game_gui.h \
     $$INCDIR/player.h \
     $$INCDIR/hole.h \
+    $$INCDIR/logwindow.h \
     $$INCDIR/player_gui.h
 
 RESOURCES += \
