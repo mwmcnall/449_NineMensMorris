@@ -22,6 +22,7 @@ private:
 public:
     int filled = false;
     int playerOwned = 0;
+    int removeReady = 0;
     Hole();
     Hole(int row, int column);
     void setCoords(int row, int column);

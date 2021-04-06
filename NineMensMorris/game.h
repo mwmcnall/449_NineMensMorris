@@ -49,7 +49,7 @@ private:
     bool isHoleFilled(int row, int col);
     bool isHoleFilled(int row, int col, int playerTurn);
     // Remove Piece
-    void removePiece();
+    void removePiece(Hole *);
 };
 
 #endif // GAME_H

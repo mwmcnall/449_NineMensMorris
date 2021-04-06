@@ -48,9 +48,9 @@ void game::ButtonPress() {
 
     // PHASE 1
     if (this->activePlayer->playerPhase == 1) {
-        if (button->filled == false) {
+        if (button->filled == false  && this->activePlayer->inMill ==0) {
             //places piece from player one pool
-            if(this->activePlayer->numPieces >= 1){
+            if(this->activePlayer->numPieces >= 1 ){
                 this->activePlayer->placePiece();
                 this->activePlayer_GUI->UpdatePlayerGUI(this->activePlayer->numPieces);
                 this->activePlayer->checkPhase();
@@ -65,9 +65,18 @@ void game::ButtonPress() {
                 if(checkMill(button)){
                     this->log->appendMessage("You got mill!");
                     qInfo() << "You got mill";
+                    this->activePlayer->inMill = 1;
+                    removePiece(button);
                 }
-                this->incrementTurn();
+                else{
+                    this->incrementTurn();
+                }
             }
+
+        }
+        else if (button->filled == true && !(button->playerOwned == this->turn)){
+            removePiece(button);
+            this->incrementTurn();
         }
     }
 
@@ -159,7 +168,7 @@ void game::incrementTurn() {
 bool game::checkMill(Hole *hole){
 
     if (checkVerticalMill(hole) || checkHorizontalMill(hole)) {
-        removePiece();
+       // removePiece();
         return true;
     }
     return false;
@@ -330,8 +339,60 @@ bool game::isValidHoleMoveRight(int row_check, int col_check) {
 }
 
 // TODO: Function still needs to be implemented
-void game::removePiece(){
-    //you get to remove a piece
+void game::removePiece(Hole *button){
+    int checkI=0;
+    qInfo() << "REmoving";
+    //Check removePiece is ready
+    if(button->removeReady==1){
+        //remove button
+        qInfo() << "REmoving this piece?";
+        //Turn them back to not ready
+        for (int i =0; i < this->b->buttons.size(); i++ )
+        {
+
+           this->b->buttons[i]->removeReady = 0;
+        }
+        this->activePlayer->inMill = 0;
+
+
+    }
+    else{
+        if(button->playerOwned == 1){
+            qInfo() << button->playerOwned;
+            qInfo() << "1";
+            //select all white pieces
+            for (int i =0; i < this->b->buttons.size(); i++ )
+            {
+                //Also turn piece into highlight
+                if(this->b->buttons[i]->playerOwned==2)
+                {
+                    this->b->buttons[i]->removeReady = 1;
+                    checkI++;
+                }
+            }
+
+        }
+        else if(button->playerOwned == 2){
+            qInfo() << button->playerOwned;
+            qInfo() << "2";
+            //select all black pieces
+            for (int i =0; i < this->b->buttons.size(); i++ )
+            {
+                //Also turn piece into highlight
+                if(this->b->buttons[i]->playerOwned==1)
+                {
+                    this->b->buttons[i]->removeReady = 1;
+                }
+            }
+
+        }
+
+    }
+    // qInfo() << button->playerOwned;
+    //if not check who's turn
+
+    //Highlight all the pieces to remove, all turn to into remove ready
+
 
 }
 

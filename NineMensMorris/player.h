@@ -12,6 +12,7 @@ public:
     int totalPieces = 9;
     bool flyStatus = false;
     int turn = -1;
+    int inMill =0;
 
 // methods
 public:
