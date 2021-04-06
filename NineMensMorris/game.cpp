@@ -56,6 +56,12 @@ void game::ButtonPress() {
                 this->activePlayer->checkPhase();
                 button->fillHole(this->turn);
 
+
+                //TODO: remove piece when gaining mill. Will most likely need to allow for a second button press? for checking pieces
+                //possibly add 2 more game states, one for player one clicking on piece to remove, one for player two to click on piece to remove
+                //also possibly too complicated. Will need to discuss further when other members are available
+                   //may need help from gui peeps to understand what to remove
+
                 if(checkMill(button)){
                     this->log->appendMessage("You got mill!");
                     qInfo() << "You got mill";
