@@ -8,6 +8,9 @@
 #include "player_gui.h"
 #include "logwindow.h"
 
+#define BLACK_PLAYER 1
+#define WHITE_PLAYER 2
+
 class game : public QObject
 {
 // variables

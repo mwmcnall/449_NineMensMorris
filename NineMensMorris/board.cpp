@@ -25,9 +25,6 @@ QWidget* Board::CreateBoardGUI(bool showButtons) {
     // Set the grid layout as a main layout
     w->setLayout(gridLayout);
 
-    // TODO: Can re-name / remove
-    //w->setWindowTitle("Board Test");
-
     // Set Size
     w->setFixedSize(500,500);
 
@@ -50,7 +47,6 @@ void Board::HideButtons() {
 // -- void CreateButtons()
 // -- Creates all necessary buttons for Nine Men's Morris and adds them to a privately created vector in Board
 void Board::CreateButtons() {
-
     for (int i = 0; i < BOARD_ELEMENTS; i++)
         buttons.append( new Hole );
 }
