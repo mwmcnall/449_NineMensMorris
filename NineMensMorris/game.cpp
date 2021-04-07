@@ -18,23 +18,39 @@ game::game()
 
 void game::setTurn(int _turn) {
     this->turn = _turn;
+
+    if (_turn == 2) {
+        this->activePlayer = playerTwo;
+        this->activePlayer_GUI = playerTwoGUI;
+    }
+    else {
+        this->activePlayer = playerOne;
+        this->activePlayer_GUI = playerOneGUI;
+    }
+
 }
 
 int game::getTurn() {
     return this->turn;
 }
 
-// TODO: Only a placeholder function for now, logic needs to be implemented
-void game::gameLoop() {
-
-    this->ConnectButtons();
-
+player* game::getActivePlayer() {
+    return this->activePlayer;
 }
 
 // -- ButtonPress()
 // -- This is what activates what any Hole is clicked on the board
 void game::ButtonPress() {
     Hole *button = qobject_cast<Hole*>(sender());
+
+    gameLoop(button, false);
+
+}
+
+// Where all the basic game logic is stored
+void game::gameLoop(Hole* holeClicked, bool simulated) {
+
+    Hole* button = holeClicked;
     playerOne->checkPhase();
     playerTwo->checkPhase();
     //TODO logic should allow for moving pieces when there is no more pieces
@@ -52,7 +68,8 @@ void game::ButtonPress() {
             //places piece from player one pool
             if(this->activePlayer->numPieces >= 1 ){
                 this->activePlayer->placePiece();
-                this->activePlayer_GUI->UpdatePlayerGUI(this->activePlayer->numPieces);
+                if (!simulated)
+                    this->activePlayer_GUI->UpdatePlayerGUI(this->activePlayer->numPieces);
                 this->activePlayer->checkPhase();
                 button->fillHole(this->turn);
 
@@ -106,9 +123,6 @@ void game::ButtonPress() {
    if(this->activePlayer->playerPhase == 3){
         //TODO phase 3 fly
    }
-
-
-
 }
 
 
@@ -125,19 +139,24 @@ void game::setActivePlayer(int turn) {
         exit(1);
 }
 
-// -- SimualteButtonPress(int, int)
-// -- Can simulate a button press based on a co-ordinate
-// -- returns true if 'pressed', false if not
-bool game::SimulateButtonPress(int x, int y) {
-    Hole *button = &this->b->buttons[x][y];
-
-    if (button->filled == false) {
-        button->fillHole(this->turn);
-        this->incrementTurn();
-        return true;
+Hole* game::getHole(int row, int col) {
+    for (auto& hole : this->b->buttons) {
+        if ((hole->getRow() == row) && (hole->getCol() == col))
+            return hole;
     }
 
-    return false;
+    // pre-condition of exiting hole not met, exit
+    exit(1);
+}
+
+
+
+// -- SimualteButtonPress(int, int)
+// -- Can simulate a button press based on a co-ordinate
+void game::SimulateButtonPress(int row, int col) {
+    Hole *button = getHole(row, col);
+
+    gameLoop(button, true);
 }
 
 
@@ -168,7 +187,6 @@ void game::incrementTurn() {
 bool game::checkMill(Hole *hole){
 
     if (checkVerticalMill(hole) || checkHorizontalMill(hole)) {
-       // removePiece();
         return true;
     }
     return false;

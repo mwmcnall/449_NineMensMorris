@@ -71,7 +71,7 @@ void MainWindow::on_pushButton_clicked()
     ui->stackedWidget->setCurrentIndex(GAME_PAGE);
     ui->stackedWidget->show();
 
-    g->gameLoop();
+    g->ConnectButtons();
 }
 
 

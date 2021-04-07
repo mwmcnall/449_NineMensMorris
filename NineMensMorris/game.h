@@ -30,12 +30,14 @@ public:
     game();
     int getTurn();
     void setTurn(int _turn);
-    void gameLoop();
-    bool SimulateButtonPress(int x, int y);
+    void gameLoop(Hole *, bool);
+    void ConnectButtons();
+    void SimulateButtonPress(int x, int y);
+    Hole* getHole(int x, int y);
+    player* getActivePlayer();
 private:
     void setActivePlayer(int turn);
     void ButtonPress();
-    void ConnectButtons();
     void incrementTurn();
     // Mill stuff
     bool checkMill(Hole *);

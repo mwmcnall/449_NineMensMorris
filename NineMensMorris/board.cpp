@@ -42,7 +42,8 @@ QWidget* Board::CreateBoardGUI(bool showButtons) {
 // -- Sets all buttons to be transparent on the board
 void Board::HideButtons() {
     for(auto b : buttons) {
-        b->setStyleSheet("QPushButton {background-color: transparent;border: 0px}");
+        b->emptyHole();
+        //b->setStyleSheet("QPushButton {background-color: transparent;border: 0px}");
     }
 }
 

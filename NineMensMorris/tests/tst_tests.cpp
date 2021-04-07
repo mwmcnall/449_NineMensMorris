@@ -33,6 +33,7 @@ tests::~tests()
 
 }
 
+
 void tests::initTestCase()
 {
 
@@ -49,7 +50,7 @@ void tests::testPlacePiece()
     g->b->CreateBoardGUI();
     // TODO: Currenty this just connects the buttson to the correct method
     // Will likely break as game is expanded
-    g->gameLoop();
+    g->ConnectButtons();
 
     g->setTurn(1);
     g->SimulateButtonPress(0, 0);
@@ -65,16 +66,16 @@ void tests::testDoNOTPlacePiece() {
     g->b->CreateBoardGUI();
     // TODO: Currenty this just connects the buttson to the correct method
     // Will likely break as game is expanded
-    g->gameLoop();
+    g->ConnectButtons();
 
     g->setTurn(1);
+    // Click the same button twice
+    g->SimulateButtonPress(0, 0);
     g->SimulateButtonPress(0, 0);
 
-    // Make sure Hole agreed it wasn't clicked
-    QCOMPARE(g->SimulateButtonPress(0, 0), false);
+    Hole* button = g->getHole(0, 0);
 
-    Hole* button = &g->b->buttons[0][0];
-
+    // Make sure the button is filled
     QCOMPARE(button->filled, true);
     // Make sure ownership didn't change after being clicked a second time
     QCOMPARE(button->playerOwned, 1);
@@ -108,12 +109,19 @@ void tests::testMill()
 {
     game *g = new game;
     g->b->CreateBoardGUI();
-    g->gameLoop();
+    g->ConnectButtons();
+    // Make sure all moves are by same player
     g->setTurn(1);
     g->SimulateButtonPress(0, 0);
-    Hole* button1 = &g->b->buttons[0][0];
-    Hole* button2 = &g->b->buttons[0][3];
-    Hole* button3 = &g->b->buttons[0][6];
+    g->setTurn(1);
+    g->SimulateButtonPress(0, 3);
+    g->setTurn(1);
+    g->SimulateButtonPress(0, 6);
+    g->setTurn(1);
+    player* p = g->getActivePlayer();
+
+    // Does player think they got a mill?
+    QCOMPARE(p->inMill, true);
 
 }
 
