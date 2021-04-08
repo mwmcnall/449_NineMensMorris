@@ -1,6 +1,7 @@
 #include "game.h"
 #include "board.h"
 #include "player.h"
+#include "hole.h"
 #include<QDebug>
 #include<QtMath>
 
@@ -394,8 +395,12 @@ void game::removePiece(Hole *button){
     //Check removePiece is ready
     if(button->removeReady==1){
         //remove button
-        qInfo() << "REmoving this piece?";
+        qInfo() << "Removing this piece?";
+        //removes hole
+        button->emptyHole();
+        button->playerOwned = 0;
         //Turn them back to not ready
+
         for (int i =0; i < this->b->buttons.size(); i++ )
         {
 
