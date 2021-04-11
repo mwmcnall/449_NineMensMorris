@@ -102,41 +102,8 @@ void game::gameLoop(Hole* holeClicked, bool simulated) {
         setActivePlayer(this->game_gui->getTurn());
     }
 
-    // ----- PHASE 1 -----
     if (this->activePlayer->playerPhase == 1) {
-        // If hole is open and no mill has been formed
-        if (button->filled == false  && this->activePlayer->inMill ==0) {
-            //places piece from player one pool
-            if(this->activePlayer->numPieces >= 1 ){
-                this->activePlayer->placePiece();
-                if (!simulated)
-                    this->activePlayer_GUI->UpdatePlayerGUI(this->activePlayer->numPieces);
-                this->activePlayer->checkPhase();
-                button->fillHole(this->turn);
-
-
-                //TODO: remove piece when gaining mill. Will most likely need to allow for a second button press? for checking pieces
-                //possibly add 2 more game states, one for player one clicking on piece to remove, one for player two to click on piece to remove
-                //also possibly too complicated. Will need to discuss further when other members are available
-                   //may need help from gui peeps to understand what to remove
-
-                if(checkMill(button)){
-                    this->log->appendMessage("You got mill!");
-                    qInfo() << "You got mill";
-                    this->activePlayer->inMill = 1;
-                    removePiece(button);
-                }
-                else{
-                    this->incrementTurn();
-                }
-            }
-
-        }
-        // If the hole has been filled and the current player doesn't own it
-        else if (button->filled == true && !(button->playerOwned == this->turn)){
-            removePiece(button);
-            this->incrementTurn();
-        }
+        phase_one(button, simulated);
     }
 
     // ----- PHASE 2 -----
@@ -165,6 +132,51 @@ void game::gameLoop(Hole* holeClicked, bool simulated) {
    if(this->activePlayer->playerPhase == 3){
         //TODO phase 3 fly
    }
+}
+
+void game::phase_one(Hole *hole, bool simulated) {
+    // If hole is open and no mill has been formed
+    if (hole->filled == false  && this->activePlayer->inMill ==0) {
+        //places piece from player one pool
+        if(this->activePlayer->numPieces >= 1 ){
+            this->activePlayer->placePiece();
+            if (!simulated)
+                this->activePlayer_GUI->UpdatePlayerGUI(this->activePlayer->numPieces);
+            this->activePlayer->checkPhase();
+            hole->fillHole(this->turn);
+
+
+            //TODO: remove piece when gaining mill. Will most likely need to allow for a second button press? for checking pieces
+            //possibly add 2 more game states, one for player one clicking on piece to remove, one for player two to click on piece to remove
+            //also possibly too complicated. Will need to discuss further when other members are available
+               //may need help from gui peeps to understand what to remove
+
+            if(checkMill(hole)){
+                this->log->appendMessage("You got mill!");
+                qInfo() << "You got mill";
+                this->activePlayer->inMill = 1;
+                this->activePlayer->removing = true;
+                removePiece(hole);
+            }
+            else{
+                this->incrementTurn();
+            }
+        }
+
+    }
+    // If the hole has been filled and the current player doesn't own it
+        // and active player is in removing phase
+    else if (hole->filled == true && !(hole->playerOwned == this->turn) &&
+             (this->activePlayer->removing)){
+        // TODO: Inefficient, it would be better to have a flag on Hole to check
+            // instead of multiple for loops w/in checkMill
+        // If trying to remove a piece from a mill, don't allow it
+        if (checkMill(hole))
+            return;
+        removePiece(hole);
+        this->incrementTurn();
+        this->activePlayer->removing = false;
+    }
 }
 
 // -- getHole(int row, int col)
@@ -388,7 +400,7 @@ bool game::isValidHoleMoveRight(int row_check, int col_check) {
     return !isHoleFilled(row_check, col_check);;
 }
 
-// TODO: Function still needs to be implemented
+// TODO: still need to implement
 void game::removePiece(Hole *button){
     int checkI=0;
     qInfo() << "REmoving";
@@ -408,6 +420,15 @@ void game::removePiece(Hole *button){
         }
         this->activePlayer->inMill = 0;
 
+        // Need to increment pieces
+        if(this->activePlayer == this->playerOne) {
+            playerTwo->numPieces++;
+            playerTwoGUI->UpdatePlayerGUI(playerTwo->numPieces);
+        }
+        else {
+            playerOne->numPieces++;
+            playerOneGUI->UpdatePlayerGUI(playerOne->numPieces);
+        }
 
     }
     else{

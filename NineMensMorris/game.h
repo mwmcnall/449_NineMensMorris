@@ -55,6 +55,8 @@ private:
     bool isHoleFilled(int row, int col, int playerTurn);
     // Remove Piece
     void removePiece(Hole *);
+    // Phases
+    void phase_one(Hole *, bool simulated);
 };
 
 #endif // GAME_H

@@ -13,6 +13,7 @@ public:
     bool flyStatus = false;
     int turn = -1;
     int inMill =0;
+    bool removing = false;
 
 // methods
 public:
