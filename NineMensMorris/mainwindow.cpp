@@ -42,7 +42,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_clicked()
 {
 
-    game *g = new game();
+    game *g = new game(false);
 
     QHBoxLayout *horizontalGameLayout = new QHBoxLayout();
     QVBoxLayout *verticalGameLayout = new QVBoxLayout();

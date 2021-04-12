@@ -5,10 +5,9 @@
 #include<QDebug>
 #include<QtMath>
 
-// -- game()
-// -- Initialization to all variables, activates a GUI element for Player to choose their color
-game::game()
-{
+// -- game(bool simulated)
+// -- Initialization to all variables, activates a GUI element for Player to choose their color if not simulated
+game::game(bool simulated) {
     this->playerOne = new player(BLACK_PLAYER);
     this->playerTwo = new player(WHITE_PLAYER);
     this->b = new Board;
@@ -16,7 +15,8 @@ game::game()
     this->playerOneGUI = new player_GUI();
     this->playerTwoGUI = new player_GUI();
 
-    game_gui->ChoosePlayerTurnGUI();
+    if (!simulated)
+        game_gui->ChoosePlayerTurnGUI();
 }
 
 // -- getTurn()
@@ -91,8 +91,6 @@ void game::ButtonPress() {
 void game::gameLoop(Hole* holeClicked, bool simulated) {
 
     Hole* button = holeClicked;
-    playerOne->checkPhase();
-    playerTwo->checkPhase();
     //TODO logic should allow for moving pieces when there is no more pieces
 
     // TODO: Need to figure out how to set the turn via the GUI before the board is built
@@ -102,36 +100,21 @@ void game::gameLoop(Hole* holeClicked, bool simulated) {
         setActivePlayer(this->game_gui->getTurn());
     }
 
-    if (this->activePlayer->playerPhase == 1) {
+    if (this->activePlayer->playerPhase == PHASE_ONE) {
         phase_one(button, simulated);
     }
 
     // ----- PHASE 2 -----
-   if(this->activePlayer->playerPhase == 2){
-        //TODO phase 2 moving pieces
-       if (button->filled == false) {
-           // If there are any valid spots to move, set playerMoving to true
-           // Otherwise do nothing
-           playerMoving = true;
-       } else if ((playerMoving == true) && (button->filled == true)) {
-           // Is the spot clicked a valid move?
-
-           // If so
-                // Clear current spot
-                // 'Move' to new spot
-                // Check mill?
-                // set playerMoving False
-           // If not
-                //
-
-           playerMoving = false;
-       }
+   if(this->activePlayer->playerPhase == PHASE_TWO){
+        phase_two(button);
    }
 
    // ----- PHASE 3 -----
-   if(this->activePlayer->playerPhase == 3){
+   if(this->activePlayer->playerPhase == PHASE_THREE){
         //TODO phase 3 fly
    }
+
+   this->activePlayer->checkPhase();
 }
 
 void game::phase_one(Hole *hole, bool simulated) {
@@ -142,9 +125,8 @@ void game::phase_one(Hole *hole, bool simulated) {
             this->activePlayer->placePiece();
             if (!simulated)
                 this->activePlayer_GUI->UpdatePlayerGUI(this->activePlayer->numPieces);
-            this->activePlayer->checkPhase();
             hole->fillHole(this->turn);
-
+            this->activePlayer->checkPhase();
 
             //TODO: remove piece when gaining mill. Will most likely need to allow for a second button press? for checking pieces
             //possibly add 2 more game states, one for player one clicking on piece to remove, one for player two to click on piece to remove
@@ -177,6 +159,59 @@ void game::phase_one(Hole *hole, bool simulated) {
         this->incrementTurn();
         this->activePlayer->removing = false;
     }
+}
+
+void game::phase_two(Hole *hole) {
+
+    // NOTE: Turn is only incremented when move is finished
+    // QUESTION: Is there ever no valid moves? Is game only over then?
+
+    if (this->movingHole == nullptr)
+        this->movingHole = hole;
+
+    if ((this->movingHole->moveState)) {
+        if (hole->filled == false) {
+           // Move
+           // Set hole to correct player image
+           hole->fillHole(this->activePlayer->turn);
+           // Set movingHole to nothing
+           this->movingHole->emptyHole();
+           this->movingHole->moveState = false;
+           incrementTurn();
+        }
+        else {
+            this->log->appendMessage("Invalid move spot! Try again.");
+        }
+       }
+    // If the hole is filled and the player owns it
+    else if ((hole->filled == true) && (this->activePlayer->turn == hole->playerOwned)) {
+       // If there are any valid spots to move, set playerMoving to true
+       // Otherwise do nothing
+
+       if (this->validMoveCount(hole)) {
+           hole->moveState = true;
+           this->movingHole = hole;
+           this->log->appendMessage("Piece can be moved!");
+       }
+       else
+           return;
+   }
+}
+
+bool game::validMoveCount(Hole *hole) {
+
+    int row = hole->getRow(), col = hole->getCol();
+
+    if (isValidHoleMoveUp(row, col))
+        return true;
+    else if (isValidHoleMoveDown(row, col))
+        return true;
+    else if (isValidHoleMoveLeft(row, col))
+        return true;
+    else if (isValidHoleMoveRight(row, col))
+        return true;
+
+    return false;
 }
 
 // -- getHole(int row, int col)
@@ -331,73 +366,88 @@ bool game::isHoleFilled(int row, int col, int playerTurn) {
     exit(1);
 }
 
+bool game::doesHoleExist(int row, int col) {
+    for (auto& hole : this->b->buttons) {
+        if ((hole->getRow() == row) && (hole->getCol() == col))
+            return true;
+    }
+
+    return false;
+}
+
+int game::moveShift(int n) {
+    if ((n == 0) || (n == 6))
+        return 3;
+    else if ((n == 1) || (n == 5))
+        return 2;
+    else if ((n == 2) || (n == 3) || (n == 4))
+        return 1;
+
+    exit(1);
+}
 
 // -- isValidHoleMoveUp(int, int)
 // -- Returns true if hole above exists and is a valid move location
 bool game::isValidHoleMoveUp(int row_check, int col_check) {
 
-    // Middle row is exception
-    if (row_check == HALF_BOARD_HEIGHT)
-        col_check += 1;
-    else
-        col_check += HALF_BOARD_HEIGHT - (row_check % HALF_BOARD_HEIGHT);
+    row_check -= moveShift(col_check);
 
     // Outside of board? Always false
-    if (col_check > BOARD_HEIGHT)
+    if (row_check < 0)
         return false;
 
-    return !isHoleFilled(row_check, col_check);
+    if (doesHoleExist(row_check, col_check))
+        return !isHoleFilled(row_check, col_check);
+    else
+        return false;
 }
 
 // -- isValidHoleMoveDown(int, int)
 // -- Returns true if hole below exists and is a valid move location
 bool game::isValidHoleMoveDown(int row_check, int col_check) {
 
-    // Middle row is exception
-    if (row_check == HALF_BOARD_HEIGHT)
-        col_check -= 1;
-    else
-        col_check -= HALF_BOARD_HEIGHT - (row_check % HALF_BOARD_HEIGHT);
+    row_check += moveShift(col_check);
 
     // Outside of board? Always false
-    if (col_check < 0)
+    if (row_check > BOARD_HEIGHT)
         return false;
 
-    return !isHoleFilled(row_check, col_check);
+    if (doesHoleExist(row_check, col_check))
+        return !isHoleFilled(row_check, col_check);
+    else
+        return false;
 }
 
 // -- isValidHoleMoveLeft(int, int)
 // -- Returns true if hole to the left exists and is a valid move location
 bool game::isValidHoleMoveLeft(int row_check, int col_check) {
 
-    // Middle col is exception
-    if (col_check == HALF_BOARD_WIDTH)
-        row_check -= 1;
-    else
-        row_check -= HALF_BOARD_WIDTH - (col_check % HALF_BOARD_WIDTH);
+    col_check -= moveShift(row_check);
 
     // Outside of board? Always false
-    if (row_check < 0)
+    if (col_check < 0)
         return false;
 
-    return !isHoleFilled(row_check, col_check);
+    if (doesHoleExist(row_check, col_check))
+        return !isHoleFilled(row_check, col_check);
+    else
+        return false;
 }
 
 // -- isValidHoleMoveRight(int, int)
 // -- Returns true if hole to the right exists and is a valid move location
 bool game::isValidHoleMoveRight(int row_check, int col_check) {
 
-    // Middle col is exception
-    if (col_check == HALF_BOARD_WIDTH)
-        row_check += 1;
-    else
-        row_check += HALF_BOARD_WIDTH - (col_check % HALF_BOARD_WIDTH);
+    col_check += moveShift(row_check);
 
     // Outside of board? Always false
-    if (row_check > BOARD_WIDTH)
+    if (col_check > BOARD_WIDTH)
         return false;
 
-    return !isHoleFilled(row_check, col_check);;
+    if (doesHoleExist(row_check, col_check))
+        return !isHoleFilled(row_check, col_check);
+    else
+        return false;
 }
 
 // TODO: still need to implement
@@ -420,7 +470,7 @@ void game::removePiece(Hole *button){
         }
         this->activePlayer->inMill = 0;
 
-        // Need to increment pieces
+        // Need to increment pieces for whichever player had a piece removed
         if(this->activePlayer == this->playerOne) {
             playerTwo->numPieces++;
             playerTwoGUI->UpdatePlayerGUI(playerTwo->numPieces);

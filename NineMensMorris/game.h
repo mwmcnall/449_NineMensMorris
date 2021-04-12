@@ -10,6 +10,9 @@
 
 #define BLACK_PLAYER 1
 #define WHITE_PLAYER 2
+#define PHASE_ONE 1
+#define PHASE_TWO 2
+#define PHASE_THREE 3
 
 class game : public QObject
 {
@@ -27,10 +30,12 @@ private:
     player_GUI* activePlayer_GUI;
     game_GUI* game_gui;
     bool playerMoving = false;
+    Hole* movingHole = nullptr;
 
 // methods
 public:
     game();
+    game(bool simulated);
     int getTurn();
     void setTurn(int _turn);
     void gameLoop(Hole *, bool);
@@ -47,16 +52,21 @@ private:
     bool checkVerticalMill(Hole *);
     bool checkHorizontalMill(Hole *);
     // Is valid checks
-    bool isValidHoleMoveUp(int, int);
-    bool isValidHoleMoveDown(int, int);
-    bool isValidHoleMoveLeft(int, int);
-    bool isValidHoleMoveRight(int, int);
     bool isHoleFilled(int row, int col);
     bool isHoleFilled(int row, int col, int playerTurn);
     // Remove Piece
     void removePiece(Hole *);
+    // Move Piece
+    int moveShift(int);
+    bool validMoveCount(Hole *);
+    bool doesHoleExist(int, int);
+    bool isValidHoleMoveUp(int, int);
+    bool isValidHoleMoveDown(int, int);
+    bool isValidHoleMoveLeft(int, int);
+    bool isValidHoleMoveRight(int, int);
     // Phases
     void phase_one(Hole *, bool simulated);
+    void phase_two(Hole *);
 };
 
 #endif // GAME_H
