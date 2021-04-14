@@ -4,6 +4,7 @@
 #include "hole.h"
 #include<QDebug>
 #include<QtMath>
+#include<string>
 
 // -- game(bool simulated)
 // -- Initialization to all variables, activates a GUI element for Player to choose their color if not simulated
@@ -123,6 +124,9 @@ void game::phase_one(Hole *hole, bool simulated) {
         //places piece from player one pool
         if(this->activePlayer->numPieces >= 1 ){
             this->activePlayer->placePiece();
+            this->log->appendMessage("--Piece placed at: (" +
+                                     QString::number(hole->getRow()) + ", " +
+                                     QString::number(hole->getCol())+ ")");
             if (!simulated)
                 this->activePlayer_GUI->UpdatePlayerGUI(this->activePlayer->numPieces);
             hole->fillHole(this->turn);
@@ -470,13 +474,10 @@ void game::removePiece(Hole *button){
         }
         this->activePlayer->inMill = 0;
 
-        // Need to increment pieces for whichever player had a piece removed
         if(this->activePlayer == this->playerOne) {
-            playerTwo->numPieces++;
             playerTwoGUI->UpdatePlayerGUI(playerTwo->numPieces);
         }
         else {
-            playerOne->numPieces++;
             playerOneGUI->UpdatePlayerGUI(playerOne->numPieces);
         }
 

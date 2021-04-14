@@ -16,6 +16,7 @@ public:
 // Helper function
 private:
     void gameMoveState(game *);
+    void gameFlyState(game *);
     game* setupGame();
 
 private slots:
@@ -44,6 +45,7 @@ private slots:
     void testValidMoveOnlyRight();
     void testClickValidMove();
     void testClickInvalidMove();
+    // Fly Tests
 };
 
 tests::tests()
@@ -291,6 +293,8 @@ void tests::testMillVertical3() {
     QCOMPARE(p->inMill, false);
 }
 
+// Used to help test various Move test ACs
+// Re-creates an image posted to the Github
 void tests::gameMoveState(game *g) {
     g->setTurn(1);
     // Black turn
@@ -331,6 +335,7 @@ void tests::gameMoveState(game *g) {
     g->SimulateButtonPress(4, 3);
 }
 
+// AC - 4.10
 void tests::testNoValidMove() {
     game *g = setupGame();
     gameMoveState(g);
@@ -342,6 +347,7 @@ void tests::testNoValidMove() {
     QCOMPARE(hole->moveState, false);
 }
 
+// AC - 4.7
 void tests::testOneValidMove() {
     game *g = setupGame();
     gameMoveState(g);
@@ -353,6 +359,7 @@ void tests::testOneValidMove() {
     QCOMPARE(hole->moveState, true);
 }
 
+// AC - 4.8
 void tests::testTwoValidMoves() {
     game *g = setupGame();
     gameMoveState(g);
@@ -364,6 +371,7 @@ void tests::testTwoValidMoves() {
     QCOMPARE(hole->moveState, true);
 }
 
+// AC - 4.9
 void tests::testThreeValidMoves() {
     game *g = setupGame();
     gameMoveState(g);
@@ -375,6 +383,7 @@ void tests::testThreeValidMoves() {
     QCOMPARE(hole->moveState, true);
 }
 
+// AC - 4.3
 void tests::testValidMoveOnlyUp() {
     game *g = setupGame();
 
@@ -423,6 +432,7 @@ void tests::testValidMoveOnlyUp() {
     QCOMPARE(hole->moveState, true);
 }
 
+// AC - 4.4
 void tests::testValidMoveOnlyDown() {
     game *g = setupGame();
 
@@ -471,6 +481,7 @@ void tests::testValidMoveOnlyDown() {
     QCOMPARE(hole->moveState, true);
 }
 
+// AC - 4.5
 void tests::testValidMoveOnlyLeft() {
     game *g = setupGame();
     gameMoveState(g);
@@ -482,6 +493,7 @@ void tests::testValidMoveOnlyLeft() {
     QCOMPARE(hole->moveState, true);
 }
 
+// AC - 4.6
 void tests::testValidMoveOnlyRight() {
     game *g = setupGame();
 
@@ -530,6 +542,7 @@ void tests::testValidMoveOnlyRight() {
     QCOMPARE(hole->moveState, true);
 }
 
+// AC - 4.1
 void tests::testClickValidMove() {
     game *g = setupGame();
     gameMoveState(g);
@@ -551,6 +564,7 @@ void tests::testClickValidMove() {
     QCOMPARE(newHole->playerOwned, g->getActivePlayer()->turn);
 }
 
+// AC - 4.2
 void tests::testClickInvalidMove() {
     game *g = setupGame();
     gameMoveState(g);
