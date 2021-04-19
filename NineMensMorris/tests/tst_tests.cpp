@@ -45,7 +45,9 @@ private slots:
     void testValidMoveOnlyRight();
     void testClickValidMove();
     void testClickInvalidMove();
+    void testMoveMillRemove();
     // Fly Tests
+    void testFlyPiece();
 };
 
 tests::tests()
@@ -335,6 +337,123 @@ void tests::gameMoveState(game *g) {
     g->SimulateButtonPress(4, 3);
 }
 
+// Sets game up from a blank slate to a Fly state
+// i.e. three total pieces left
+void tests::gameFlyState(game *g) {
+    gameMoveState(g);
+    g->setTurn(1);
+
+    // Form a black mill
+    g->SimulateButtonPress(3,6);
+    g->SimulateButtonPress(3,5);
+    // Remove white piece
+    g->SimulateButtonPress(6,6);
+    // Form a white mill
+    g->SimulateButtonPress(3,0);
+    g->SimulateButtonPress(3,1);
+    // Remove black piece
+    g->SimulateButtonPress(6,0);
+    // Move black piece
+    g->SimulateButtonPress(3,5);
+    g->SimulateButtonPress(3,6);
+    // Move white piece
+    g->SimulateButtonPress(3,1);
+    g->SimulateButtonPress(3,0);
+
+    // Form a black mill
+    g->SimulateButtonPress(3,6);
+    g->SimulateButtonPress(3,5);
+    // Remove white piece
+    g->SimulateButtonPress(0,3);
+    // Form a white mill
+    g->SimulateButtonPress(3,0);
+    g->SimulateButtonPress(3,1);
+    // Remove black piece
+    g->SimulateButtonPress(6,3);
+    // Move black piece
+    g->SimulateButtonPress(3,5);
+    g->SimulateButtonPress(3,6);
+    // Move white piece
+    g->SimulateButtonPress(3,1);
+    g->SimulateButtonPress(3,0);
+
+    // Form a black mill
+    g->SimulateButtonPress(3,6);
+    g->SimulateButtonPress(3,5);
+    // Remove white piece
+    g->SimulateButtonPress(0,0);
+    // Form a white mill
+    g->SimulateButtonPress(3,0);
+    g->SimulateButtonPress(3,1);
+    // Remove black piece
+    g->SimulateButtonPress(0,6);
+    // Move black piece
+    g->SimulateButtonPress(3,5);
+    g->SimulateButtonPress(3,6);
+    // Move white piece
+    g->SimulateButtonPress(3,1);
+    g->SimulateButtonPress(3,0);
+
+    // Form a black mill
+    g->SimulateButtonPress(3,6);
+    g->SimulateButtonPress(3,5);
+    // Remove white piece
+    g->SimulateButtonPress(4,3);
+    // Form a white mill
+    g->SimulateButtonPress(3,0);
+    g->SimulateButtonPress(3,1);
+    // Remove black piece
+    g->SimulateButtonPress(3,4);
+    // Move black piece
+    g->SimulateButtonPress(3,5);
+    g->SimulateButtonPress(3,6);
+    // Move white piece
+    g->SimulateButtonPress(3,1);
+    g->SimulateButtonPress(3,0);
+
+    // Form a black mill
+    g->SimulateButtonPress(3,6);
+    g->SimulateButtonPress(3,5);
+    // Remove white piece
+    g->SimulateButtonPress(2,2);
+    // Form a white mill
+    g->SimulateButtonPress(3,0);
+    g->SimulateButtonPress(3,1);
+    // Remove black piece
+    g->SimulateButtonPress(2,3);
+    // Move black piece
+    g->SimulateButtonPress(3,5);
+    g->SimulateButtonPress(3,6);
+    // Move white piece
+    g->SimulateButtonPress(3,1);
+    g->SimulateButtonPress(3,0);
+
+    // Form a black mill
+    g->SimulateButtonPress(3,6);
+    g->SimulateButtonPress(3,5);
+    // Remove white piece
+    g->SimulateButtonPress(3,2);
+
+    // Move white piece
+    g->SimulateButtonPress(3,0);
+    g->SimulateButtonPress(6,0);
+    // Move black piece
+    g->SimulateButtonPress(3,5);
+    g->SimulateButtonPress(3,6);
+    // Move white piece
+    g->SimulateButtonPress(6,0);
+    g->SimulateButtonPress(3,0);
+    // Move black piece
+    g->SimulateButtonPress(3,6);
+    g->SimulateButtonPress(0,6);
+    // Move white piece
+    g->SimulateButtonPress(3,0);
+    g->SimulateButtonPress(3,1);
+    // Remove black piece
+    g->SimulateButtonPress(2,4);
+
+}
+
 // AC - 4.10
 void tests::testNoValidMove() {
     game *g = setupGame();
@@ -485,8 +604,6 @@ void tests::testValidMoveOnlyDown() {
 void tests::testValidMoveOnlyLeft() {
     game *g = setupGame();
     gameMoveState(g);
-
-    g->setTurn(1);
     // Click a button with only a valid move up
     g->SimulateButtonPress(3, 6);
     Hole* hole = g->getHole(3, 6);
@@ -583,6 +700,65 @@ void tests::testClickInvalidMove() {
     QCOMPARE(oldHole->filled, true);
     QCOMPARE(newHole->moveState, false);
     QCOMPARE(newHole->filled, true);
+}
+
+void tests::testMoveMillRemove() {
+    game *g = setupGame();
+    gameMoveState(g);
+
+    g->setTurn(1);
+    g->SimulateButtonPress(3, 6);
+    // Form a mill with this move
+    g->SimulateButtonPress(3, 5);
+
+    // Attempt to remove a white piece
+    g->SimulateButtonPress(6,6);
+
+    // Check if it's removed
+    Hole* hole = g->getHole(6, 6);
+    QCOMPARE(hole->filled, false);
+    // Check if it's been set to white's turn
+    QCOMPARE(g->getActivePlayer()->turn, 2);
+}
+
+void tests::testFlyPiece() {
+    game *g = setupGame();
+    gameFlyState(g);
+
+    // Fly State assertions, only needed in one of any test function
+    Hole* hole = g->getHole(1, 1);
+    QCOMPARE(hole->filled, true);
+    QCOMPARE(hole->playerOwned, 2);
+    hole = g->getHole(3, 1);
+    QCOMPARE(hole->filled, true);
+    QCOMPARE(hole->playerOwned, 2);
+    hole = g->getHole(5, 1);
+    QCOMPARE(hole->filled, true);
+    QCOMPARE(hole->playerOwned, 2);
+
+    hole = g->getHole(0, 6);
+    QCOMPARE(hole->filled, true);
+    QCOMPARE(hole->playerOwned, 1);
+    hole = g->getHole(1, 5);
+    QCOMPARE(hole->filled, true);
+    QCOMPARE(hole->playerOwned, 1);
+    hole = g->getHole(5, 5);
+    QCOMPARE(hole->filled, true);
+    QCOMPARE(hole->playerOwned, 1);
+
+    // Actual fly piece test
+    // TODO: Still needs to be implemented, test will fail until then
+    // NOTE: It is currently black's turn
+
+    // Attempt to fly piece
+    g->SimulateButtonPress(0, 6);
+    g->SimulateButtonPress(6, 0);
+    hole = g->getHole(0, 6);
+
+    QCOMPARE(hole->filled, true);
+    QCOMPARE(hole->playerOwned, 1);
+    QCOMPARE(g->getActivePlayer()->turn, 2);
+
 }
 
 //Test Remove

@@ -28,7 +28,8 @@ int Hole::getCol() {
 
 // Removes ownership and hides player image
 void Hole::emptyHole() {
-    this->filled = 0;
+    this->filled = false;
+    this->playerOwned = 0;
     this->setStyleSheet("QPushButton {background-color: transparent;border: 0px}");
 }
 

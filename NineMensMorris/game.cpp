@@ -107,7 +107,7 @@ void game::gameLoop(Hole* holeClicked, bool simulated) {
 
     // ----- PHASE 2 -----
    if(this->activePlayer->playerPhase == PHASE_TWO){
-        phase_two(button);
+        phase_two(button, simulated);
    }
 
    // ----- PHASE 3 -----
@@ -142,7 +142,7 @@ void game::phase_one(Hole *hole, bool simulated) {
                 qInfo() << "You got mill";
                 this->activePlayer->inMill = 1;
                 this->activePlayer->removing = true;
-                removePiece(hole);
+                removePiece(hole, simulated);
             }
             else{
                 this->incrementTurn();
@@ -159,13 +159,13 @@ void game::phase_one(Hole *hole, bool simulated) {
         // If trying to remove a piece from a mill, don't allow it
         if (checkMill(hole))
             return;
-        removePiece(hole);
+        removePiece(hole, simulated);
         this->incrementTurn();
         this->activePlayer->removing = false;
     }
 }
 
-void game::phase_two(Hole *hole) {
+void game::phase_two(Hole *hole, bool simulated) {
 
     // NOTE: Turn is only incremented when move is finished
     // QUESTION: Is there ever no valid moves? Is game only over then?
@@ -173,14 +173,41 @@ void game::phase_two(Hole *hole) {
     if (this->movingHole == nullptr)
         this->movingHole = hole;
 
-    if ((this->movingHole->moveState)) {
+    // If a previous move formed a mill and hole is filled by other player
+    if (this->activePlayer->removing && hole->filled == true
+            && !(hole->playerOwned == this->turn)) {
+        // If hole forms a mill, can't remove it
+        if (checkMill(hole)) {
+            this->log->appendMessage("Can't remove piece! It forms a mill, try again");
+            return;
+        }
+        this->log->appendMessage("Removing opponent's piece at (" +
+                                 QString::number(hole->getRow()) + ", " +
+                                 QString::number(hole->getCol())+ ")");
+        hole->removeReady = true;
+        removePiece(hole, simulated);
+        this->activePlayer->removing = false;
+        this->incrementTurn();
+    }
+    // Move piece logic
+    else if ((this->movingHole->moveState)) {
         if (hole->filled == false) {
            // Move
            // Set hole to correct player image
            hole->fillHole(this->activePlayer->turn);
+           this->log->appendMessage("Piece moved to (" +
+                                    QString::number(hole->getRow()) + ", " +
+                                    QString::number(hole->getCol())+ ")");
            // Set movingHole to nothing
            this->movingHole->emptyHole();
            this->movingHole->moveState = false;
+           // Check if piece formed a mill in it's new position
+           if(checkMill(hole)) {
+               // Set flag, don't increment turn
+               this->activePlayer->removing = true;
+               this->log->appendMessage("Mill formed! Select an opponent's piece to remove");
+               return;
+           }
            incrementTurn();
         }
         else {
@@ -195,7 +222,10 @@ void game::phase_two(Hole *hole) {
        if (this->validMoveCount(hole)) {
            hole->moveState = true;
            this->movingHole = hole;
-           this->log->appendMessage("Piece can be moved!");
+           this->log->appendMessage("Piece at ("+
+                                    QString::number(hole->getRow()) + ", " +
+                                    QString::number(hole->getCol())+ ")" +
+                                    " can be moved!");
        }
        else
            return;
@@ -359,7 +389,7 @@ bool game::isHoleFilled(int row, int col, int playerTurn) {
 
     for (auto& hole : this->b->buttons) {
         if ((hole->getRow() == row) && (hole->getCol() == col)) {
-            if (hole->playerOwned == playerTurn)
+            if (hole->playerOwned == playerTurn && hole->filled)
                 return true;
             else
                 return false;
@@ -455,7 +485,7 @@ bool game::isValidHoleMoveRight(int row_check, int col_check) {
 }
 
 // TODO: still need to implement
-void game::removePiece(Hole *button){
+void game::removePiece(Hole *button, bool simulated){
     int checkI=0;
     qInfo() << "REmoving";
     //Check removePiece is ready
@@ -474,11 +504,13 @@ void game::removePiece(Hole *button){
         }
         this->activePlayer->inMill = 0;
 
-        if(this->activePlayer == this->playerOne) {
-            playerTwoGUI->UpdatePlayerGUI(playerTwo->numPieces);
-        }
-        else {
-            playerOneGUI->UpdatePlayerGUI(playerOne->numPieces);
+        if (!simulated) {
+            if(this->activePlayer == this->playerOne) {
+                playerTwoGUI->UpdatePlayerGUI(playerTwo->numPieces);
+            }
+            else {
+                playerOneGUI->UpdatePlayerGUI(playerOne->numPieces);
+            }
         }
 
     }
