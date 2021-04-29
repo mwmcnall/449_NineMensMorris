@@ -1,17 +1,6 @@
 #include "board.h"
 #include <QMessageBox>
 
-#define BUTTON_WIDTH 1
-#define BUTTON_HEIGHT 1
-#define BOARD_WIDTH 7
-// 3 for this case
-#define HALF_BOARD_WIDTH int((BOARD_WIDTH -1) / 2)
-#define BOARD_HEIGHT 7
-// 3 for this case
-#define HALF_BOARD_HEIGHT int((BOARD_HEIGHT -1) / 2)
-// 24 for this case
-#define BOARD_ELEMENTS int(((BOARD_WIDTH * BOARD_HEIGHT)-1)/2)
-
 // Initializer
 Board::Board(QWidget *parent) : QWidget(parent)
 {
@@ -36,9 +25,6 @@ QWidget* Board::CreateBoardGUI(bool showButtons) {
     // Set the grid layout as a main layout
     w->setLayout(gridLayout);
 
-    // TODO: Can re-name / remove
-    //w->setWindowTitle("Board Test");
-
     // Set Size
     w->setFixedSize(500,500);
 
@@ -53,14 +39,14 @@ QWidget* Board::CreateBoardGUI(bool showButtons) {
 // -- Sets all buttons to be transparent on the board
 void Board::HideButtons() {
     for(auto b : buttons) {
-        b->setStyleSheet("QPushButton {background-color: transparent;border: 0px}");
+        b->emptyHole();
+        //b->setStyleSheet("QPushButton {background-color: transparent;border: 0px}");
     }
 }
 
 // -- void CreateButtons()
 // -- Creates all necessary buttons for Nine Men's Morris and adds them to a privately created vector in Board
 void Board::CreateButtons() {
-
     for (int i = 0; i < BOARD_ELEMENTS; i++)
         buttons.append( new Hole );
 }
@@ -82,7 +68,7 @@ void Board::AddButtonsToBoard(QGridLayout* gridLayout) {
             // 2 and 4
                 // 2, 3, 4
             AddButtonToGridLayout(gridLayout, buttons[buttonCount], row, col, buttonCount);
-            AddButtonToGridLayout(gridLayout, buttons[buttonCount], BOARD_HEIGHT - row, col, buttonCount);
+            AddButtonToGridLayout(gridLayout, buttons[buttonCount], BOARD_HEIGHT - row - 1, col, buttonCount);
         }
 
         distance -= 1;

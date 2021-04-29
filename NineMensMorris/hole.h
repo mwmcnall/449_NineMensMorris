@@ -9,7 +9,6 @@ struct coord
 {
     int row;
     int column;
-
 };
 
 class Hole : public QPushButton
@@ -23,14 +22,14 @@ private:
 public:
     int filled = false;
     int playerOwned = 0;
+    int removeReady = 0;
+    bool moveState = false;
     Hole();
     Hole(int row, int column);
     void setCoords(int row, int column);
     int getRow();
     int getCol();
     void emptyHole();
-
-
     void fillHole(int player);
 
 };

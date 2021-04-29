@@ -1,8 +1,8 @@
 #include "player.h"
 
-player::player()
+player::player(int turn_)
 {
-
+    this->turn = turn_;
 }
 
 void player::placePiece() {
@@ -10,8 +10,15 @@ void player::placePiece() {
     this->numPieces -= 1;
 }
 
-void player::checkFly() {
-    if (this->numPieces == 3) {
-        this->flyStatus = true;
+void player::checkPhase() {
+    if (numPieces == 0){
+        playerPhase = 2;
     }
+    if (this->totalPieces == 3) {
+        playerPhase = 3;
+    }
+}
+
+void player::computerPlacePiece(){
+
 }

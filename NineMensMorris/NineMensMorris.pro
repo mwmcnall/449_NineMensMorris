@@ -11,30 +11,29 @@ CONFIG += c++11
 SOURCES += \
     board.cpp \
     game.cpp \
+    game_gui.cpp \
     hole.cpp \
+    logwindow.cpp \
     main.cpp \
     mainwindow.cpp \
     player.cpp \
-    testboard.cpp \
-    testgame.cpp \
-    testpieces.cpp
+    player_gui.cpp
 
 HEADERS += \
     board.h \
     game.h \
+    game_gui.h \
     hole.h \
+    logwindow.h \
     mainwindow.h \
     player.h \
-    testboard.h \
-    testgame.h \
-    testpieces.h
+    player_gui.h
 
 FORMS += \
     mainwindow.ui
 
 QT += testlib
 TEMPLATE = app
-TARGET = unittests
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
