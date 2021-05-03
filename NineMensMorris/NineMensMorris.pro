@@ -11,7 +11,6 @@ CONFIG += c++11
 SOURCES += \
     board.cpp \
     game.cpp \
-    game_gui.cpp \
     hole.cpp \
     logwindow.cpp \
     main.cpp \
@@ -22,7 +21,6 @@ SOURCES += \
 HEADERS += \
     board.h \
     game.h \
-    game_gui.h \
     hole.h \
     logwindow.h \
     mainwindow.h \

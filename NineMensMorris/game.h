@@ -28,7 +28,7 @@ private:
     player* playerTwo;
     player* activePlayer;
     player_GUI* activePlayer_GUI;
-    game_GUI* game_gui;
+
     bool playerMoving = false;
     Hole* movingHole = nullptr;
 
@@ -36,6 +36,7 @@ private:
 public:
     game();
     game(bool simulated);
+    void setActivePlayer(int turn);
     int getTurn();
     void setTurn(int _turn);
     void gameLoop(Hole *, bool);
@@ -44,7 +45,6 @@ public:
     Hole* getHole(int x, int y);
     player* getActivePlayer();
 private:
-    void setActivePlayer(int turn);
     void ButtonPress();
     void incrementTurn();
     // Mill stuff

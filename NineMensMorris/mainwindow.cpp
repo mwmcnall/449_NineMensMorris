@@ -1,9 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "board.h"
-#include "game.h"
-#include "player_gui.h"
-#include "logwindow.h"
 #include <QLabel>
 #include <QPixmap>
 
@@ -13,6 +9,19 @@
 
 #define HOME_PAGE 0
 #define GAME_PAGE 1
+#define OPP_PAGE 2
+#define COLOR_PAGE 3
+
+#define HUMAN_PLAYER 0
+#define COMPUTER_PLAYER 1
+
+#define WHITE_PIECES 2
+#define BLACK_PIECES 1
+
+// Variables to control UI
+int opponent;
+int human_color;
+game *g;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -42,7 +51,35 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_clicked()
 {
 
-    game *g = new game(false);
+    g = new game(false);
+
+    ui->stackedWidget->setCurrentIndex(OPP_PAGE);
+    ui->stackedWidget->show();
+}
+
+void MainWindow::activateColorScene() {
+    ui->stackedWidget->setCurrentIndex(COLOR_PAGE);
+    ui->stackedWidget->show();
+}
+
+void MainWindow::on_human_button_clicked()
+{
+    opponent = HUMAN_PLAYER;
+
+    // Change scene
+    activateColorScene();
+}
+
+
+void MainWindow::on_computer_button_clicked()
+{
+    opponent = COMPUTER_PLAYER;
+
+    // Change scene
+    activateColorScene();
+}
+
+void MainWindow::activateGameScene() {
 
     QHBoxLayout *horizontalGameLayout = new QHBoxLayout();
     QVBoxLayout *verticalGameLayout = new QVBoxLayout();
@@ -58,33 +95,34 @@ void MainWindow::on_pushButton_clicked()
     w->setLayout(horizontalGameLayout);
 
     verticalGameLayout->addWidget(w);
+    // Adds log to below game for information display
     verticalGameLayout->addWidget(g->log);
 
     QWidget* main = new QWidget();
 
     main->setLayout(verticalGameLayout);
-    //main->setFixedSize(800,700);
-    //main->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+
+    g->setActivePlayer(human_color);
 
     ui->stackedWidget->insertWidget(GAME_PAGE, main);
-    //ui->stackedWidget->insertWidget(GAME_PAGE, g->b->CreateBoardGUI());
     ui->stackedWidget->setCurrentIndex(GAME_PAGE);
     ui->stackedWidget->show();
 
     g->ConnectButtons();
 }
 
+void MainWindow::on_black_button_clicked()
+{
+    human_color = BLACK_PIECES;
 
+    // Change scene
+    activateGameScene();
+}
 
+void MainWindow::on_white_button_clicked()
+{
+    human_color = WHITE_PIECES;
 
-
-
-
-
-
-
-
-
-
-
-
+    // Change scene
+    activateGameScene();
+}

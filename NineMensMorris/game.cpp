@@ -12,12 +12,8 @@ game::game(bool simulated) {
     this->playerOne = new player(BLACK_PLAYER);
     this->playerTwo = new player(WHITE_PLAYER);
     this->b = new Board;
-    this->game_gui = new game_GUI();
     this->playerOneGUI = new player_GUI();
     this->playerTwoGUI = new player_GUI();
-
-    if (!simulated)
-        game_gui->ChoosePlayerTurnGUI();
 }
 
 // -- getTurn()
@@ -49,10 +45,12 @@ void game::setActivePlayer(int turn) {
     if (turn == BLACK_PLAYER) {
         this->activePlayer = this->playerOne;
         this->activePlayer_GUI = this->playerOneGUI;
+        this->turn = turn;
     }
     else if (turn == WHITE_PLAYER) {
         this->activePlayer = this->playerTwo;
         this->activePlayer_GUI = this->playerTwoGUI;
+        this->turn = turn;
     }
     else
         exit(1);
@@ -93,13 +91,6 @@ void game::gameLoop(Hole* holeClicked, bool simulated) {
 
     Hole* button = holeClicked;
     //TODO logic should allow for moving pieces when there is no more pieces
-
-    // TODO: Need to figure out how to set the turn via the GUI before the board is built
-    // Otherwise we need a check like this, which is inefficient
-    if (this->turn == -1) {
-        setTurn(this->game_gui->getTurn());
-        setActivePlayer(this->game_gui->getTurn());
-    }
 
     if (this->activePlayer->playerPhase == PHASE_ONE) {
         phase_one(button, simulated);

@@ -15,7 +15,6 @@ SOURCES +=  \
     tst_tests.cpp \
     $$INCDIR/board.cpp \
     $$INCDIR/game.cpp \
-    $$INCDIR/game_gui.cpp \
     $$INCDIR/player.cpp \
     $$INCDIR/hole.cpp \
     $$INCDIR/logwindow.cpp \
@@ -24,7 +23,6 @@ SOURCES +=  \
 HEADERS +=  \
     $$INCDIR/board.h \
     $$INCDIR/game.h \
-    $$INCDIR/game_gui.h \
     $$INCDIR/player.h \
     $$INCDIR/hole.h \
     $$INCDIR/logwindow.h \
