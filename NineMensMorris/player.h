@@ -20,7 +20,7 @@ public:
     player(int turn_);
     void placePiece();
     void checkPhase();
-    void computerPlacePiece();
+    //void computerPlacePiece();
 
 };
 

@@ -11,14 +11,14 @@ void player::placePiece() {
 }
 
 void player::checkPhase() {
-    if (numPieces == 0){
-        playerPhase = 2;
+    if (this->numPieces == 0){
+        this->playerPhase = 2;
     }
     if (this->totalPieces == 3) {
-        playerPhase = 3;
+        this->playerPhase = 3;
     }
 }
 
-void player::computerPlacePiece(){
+//void player::computerPlacePiece(){
 
-}
+//}

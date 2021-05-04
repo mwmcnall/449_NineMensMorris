@@ -35,7 +35,7 @@ void Hole::emptyHole() {
 
 // Claims hole for player and activates player image
 void Hole::fillHole(int player) {
-    this->filled = 1;
+    this->filled = true;
     this->playerOwned = player;
     this->activateImage(player);
 }

@@ -71,6 +71,12 @@ private:
     //Computer Player
     void setComputerPlayer();
     void computerLoop(bool simulated);
+    void computerPhaseOne(bool simulated);
+    void computerPhaseTwo(bool simulated);
+    void computerPhaseThree(bool simulated);
+    Hole* computerChoice();
+    void momentToFill(Hole* hole);
+    void momentToUnfill(Hole* hole);
 };
 
 #endif // GAME_H
