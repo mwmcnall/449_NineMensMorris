@@ -224,7 +224,7 @@ void game::phase_two(Hole *hole, bool simulated) {
     }
     // Move piece logic
     else if ((this->movingHole->moveState)) {
-        if (hole->filled == false) {
+        if (hole->filled == false && validMoveCount(hole) ) {
            // Move
            // Set hole to correct player image
            hole->fillHole(this->activePlayer->turn);
