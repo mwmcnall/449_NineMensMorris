@@ -1,0 +1,14 @@
+release/board.o
+release/game.o
+release/game_gui.o
+release/hole.o
+release/logwindow.o
+release/main.o
+release/mainwindow.o
+release/player.o
+release/player_gui.o
+release/qrc_resource.o
+release/moc_board.o
+release/moc_hole.o
+release/moc_logwindow.o
+release/moc_mainwindow.o

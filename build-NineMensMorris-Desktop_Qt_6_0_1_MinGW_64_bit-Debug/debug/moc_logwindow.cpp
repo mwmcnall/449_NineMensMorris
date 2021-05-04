@@ -7,7 +7,7 @@
 *****************************************************************************/
 
 #include <memory>
-#include "../../../../backup2/NineMensMorris/logwindow.h"
+#include "../../NineMensMorris/logwindow.h"
 #include <QtGui/qtextcursor.h>
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
