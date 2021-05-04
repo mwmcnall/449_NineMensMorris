@@ -4,7 +4,7 @@
 #include "player.h"
 #include "board.h"
 #include "mainwindow.h"
-#include "game_gui.h"
+
 #include "player_gui.h"
 #include "logwindow.h"
 
@@ -32,6 +32,8 @@ private:
     bool playerMoving = false;
     Hole* movingHole = nullptr;
 
+    player* computerPlayer;
+
 // methods
 public:
     game();
@@ -44,6 +46,8 @@ public:
     void SimulateButtonPress(int x, int y);
     Hole* getHole(int x, int y);
     player* getActivePlayer();
+
+    void setComputerPlayer(int human_Color);
 private:
     void ButtonPress();
     void incrementTurn();
@@ -67,6 +71,15 @@ private:
     // Phases
     void phase_one(Hole *, bool simulated);
     void phase_two(Hole *, bool simaulted);
+    //Computer Player
+
+    void computerLoop(bool simulated);
+    void computerPhaseOne(bool simulated);
+    void computerPhaseTwo(bool simulated);
+    void computerPhaseThree(bool simulated);
+    Hole* computerChoice();
+    void momentToFill(Hole* hole);
+    void momentToUnfill(Hole* hole);
 };
 
 #endif // GAME_H

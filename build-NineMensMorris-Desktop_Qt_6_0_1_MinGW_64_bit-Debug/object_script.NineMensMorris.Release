@@ -1,6 +1,5 @@
 release/board.o
 release/game.o
-release/game_gui.o
 release/hole.o
 release/logwindow.o
 release/main.o

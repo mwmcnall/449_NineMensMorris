@@ -1,6 +1,5 @@
 debug/board.o
 debug/game.o
-debug/game_gui.o
 debug/hole.o
 debug/logwindow.o
 debug/main.o

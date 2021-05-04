@@ -103,6 +103,7 @@ void MainWindow::activateGameScene() {
     main->setLayout(verticalGameLayout);
 
     g->setActivePlayer(human_color);
+    g->setComputerPlayer(human_color);
 
     ui->stackedWidget->insertWidget(GAME_PAGE, main);
     ui->stackedWidget->setCurrentIndex(GAME_PAGE);

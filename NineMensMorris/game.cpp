@@ -6,6 +6,8 @@
 #include<QtMath>
 #include<string>
 
+
+
 // -- game(bool simulated)
 // -- Initialization to all variables, activates a GUI element for Player to choose their color if not simulated
 game::game(bool simulated) {
@@ -14,6 +16,8 @@ game::game(bool simulated) {
     this->b = new Board;
     this->playerOneGUI = new player_GUI();
     this->playerTwoGUI = new player_GUI();
+
+    this->computerPlayer = new player(-1);
 }
 
 // -- getTurn()
@@ -81,6 +85,12 @@ void game::ButtonPress() {
     Hole *button = qobject_cast<Hole*>(sender());
 
     gameLoop(button, false);
+
+    //Activate Computer Player
+    if(computerPlayer->active == true ){
+
+            computerLoop(false);
+        }
 
 }
 
@@ -545,5 +555,395 @@ void game::removePiece(Hole *button, bool simulated){
 
 }
 
+void game::setComputerPlayer(int human_Color){
+     qInfo() << "in top of setcompplayer";
 
+    if(human_Color == BLACK_PLAYER){
+        computerPlayer->turn = WHITE_PLAYER;
+    }
+    else if (human_Color == WHITE_PLAYER){
+        computerPlayer->turn = BLACK_PLAYER;
+    }
+    computerPlayer->active = true;
+    // qInfo() << "in bottom of setCompPla";
+}
+
+void  game::computerLoop(bool simulated){
+     qInfo() << "in top of computerloop";
+
+
+    //not sure if we still need this check
+    //if (this->turn == -1) {
+      //  setTurn(this->turn->getTurn());
+        //setActivePlayer(this->game_gui->getTurn());
+    //}
+
+    if (this->activePlayer->playerPhase == PHASE_ONE) {
+        computerPhaseOne(simulated);
+    }
+
+    // ----- PHASE 2 -----
+   else if(this->activePlayer->playerPhase == PHASE_TWO){
+       computerPhaseTwo(simulated);
+   }
+
+   // ----- PHASE 3 -----
+   else if(this->activePlayer->playerPhase == PHASE_THREE){
+        //TODO phase 3 fly
+   }
+
+   this->activePlayer->checkPhase();
+     qInfo() << "in bottom of computerloop";
+
+}
+void game::computerPhaseOne(bool simulated){
+     qInfo() << "in top of comPhase1";
+   Hole* hole = computerChoice();
+
+   if (hole->filled == false  && this->activePlayer->inMill ==0) {
+       qInfo() << "in top of comPhase1 if1";
+           //places piece from player one pool
+           if(this->activePlayer->numPieces >= 1 ){
+               qInfo() << "in top of comPhase1 if2";
+
+               this->activePlayer->placePiece();
+               this->log->appendMessage("--Piece placed at: (" +
+                                         QString::number(hole->getRow()) + ", " +
+                                         QString::number(hole->getCol())+ ")");
+
+
+               if (!simulated)
+                   this->activePlayer_GUI->UpdatePlayerGUI(this->activePlayer->numPieces);
+               hole->fillHole(this->activePlayer->turn);
+               this->activePlayer->checkPhase();
+
+               //TODO: remove piece when gaining mill. Will most likely need to allow for a second button press? for checking pieces
+               //possibly add 2 more game states, one for player one clicking on piece to remove, one for player two to click on piece to remove
+               //also possibly too complicated. Will need to discuss further when other members are available
+                  //may need help from gui peeps to understand what to remove
+
+               if(checkMill(hole)){
+                   qInfo() << "in top of comPhase1 if3";
+                   this->log->appendMessage("You got mill!");
+                   qInfo() << "You got mill";
+                   this->activePlayer->inMill = 1;
+                   this->activePlayer->removing = true;
+                   removePiece(hole, simulated);
+                   //I have to add something HERE
+                   if(this->turn == this->computerPlayer->turn){
+                       computerLoop(simulated);
+                   }
+               }
+               else{
+                   qInfo() << "in top of comPhase1 if4";
+                   this->incrementTurn();
+               }
+           }
+
+       }
+       // If the hole has been filled and the current player doesn't own it
+           // and active player is in removing phase
+       else if (hole->filled == true && !(hole->playerOwned == this->turn) &&
+                (this->activePlayer->removing)){
+       qInfo() << "in top of comPhase1 if5";
+           // TODO: Inefficient, it would be better to have a flag on Hole to check
+               // instead of multiple for loops w/in checkMill
+           // If trying to remove a piece from a mill, don't allow it
+           if (checkMill(hole))
+               return;
+           removePiece(hole, simulated);
+
+           this->activePlayer->removing = false;
+           this->incrementTurn();
+       }
+    qInfo() << "in bottom of compPhase1";
+}
+
+
+
+void game::computerPhaseTwo(bool simulated){
+    qInfo() << "in top of compPhase2";
+    Hole* hole = computerChoice();
+    // NOTE: Turn is only incremented when move is finished
+    // QUESTION: Is there ever no valid moves? Is game only over then?
+
+    if (this->movingHole == nullptr)
+        this->movingHole = hole;
+
+
+
+    // If a previous move formed a mill and hole is filled by other player
+    if (this->activePlayer->removing && hole->filled == true
+            && !(hole->playerOwned == this->turn)) {
+        // If hole forms a mill, can't remove it
+        if (checkMill(hole)) {
+            this->log->appendMessage("Can't remove piece! It forms a mill, try again");
+            //Add computer loop to try again
+            computerLoop(simulated);
+            //return;
+        }
+        this->log->appendMessage("Removing opponent's piece at (" +
+                                 QString::number(hole->getRow()) + ", " +
+                                 QString::number(hole->getCol())+ ")");
+        hole->removeReady = true;
+        removePiece(hole, simulated);
+        this->activePlayer->removing = false;
+        this->incrementTurn();
+    }
+    // Move piece logic
+    else if ((this->movingHole->moveState)) {
+        if (hole->filled == false) {
+           // Move
+           // Set hole to correct player image
+           hole->fillHole(this->activePlayer->turn);
+           this->log->appendMessage("Piece moved to (" +
+                                    QString::number(hole->getRow()) + ", " +
+                                    QString::number(hole->getCol())+ ")");
+           // Set movingHole to nothing
+           this->movingHole->emptyHole();
+           this->movingHole->moveState = false;
+           // Check if piece formed a mill in it's new position
+           if(checkMill(hole)) {
+               // Set flag, don't increment turn
+               this->activePlayer->removing = true;
+               this->log->appendMessage("Mill formed! Select an opponent's piece to remove");
+               //Adding computer loop
+               computerLoop(simulated);
+               //return;
+           }
+           incrementTurn();
+        }
+        else {
+            this->log->appendMessage("Invalid move spot! Try again.");
+            //Adding computerloop for try again
+            computerLoop(simulated);
+        }
+       }
+    // If the hole is filled and the player owns it
+    else if ((hole->filled == true) && (this->activePlayer->turn == hole->playerOwned)) {
+       // If there are any valid spots to move, set playerMoving to true
+       // Otherwise do nothing
+
+       if (this->validMoveCount(hole)) {
+           hole->moveState = true;
+           this->movingHole = hole;
+           this->log->appendMessage("Piece at ("+
+                                    QString::number(hole->getRow()) + ", " +
+                                    QString::number(hole->getCol())+ ")" +
+                                    " can be moved!");
+           //Adding computerloop
+           computerLoop(simulated);
+       }
+       else{
+           //Adding computerloop
+           //computerLoop(simulated);
+           return;
+       }
+   }
+     qInfo() << "in bottom of compPhase2";
+}
+
+Hole* game::computerChoice(){
+    //Way to much
+    qInfo() << "in top of comChoice";
+    //Computer to choose where to put a piece in phase 1
+    if(activePlayer->inMill == 0 && activePlayer->playerPhase == PHASE_ONE){
+        qInfo() << "in top of comChoice if1";
+        int sizeButon = b->buttons.size();
+        QVector<Hole*> movesValid;
+        for(int i =0; i < sizeButon; i++){
+            if(!b->buttons[i]->filled){
+                movesValid.push_back(b->buttons[i]);
+            }
+
+        }
+
+        //Phase one
+        //The intelligence of modern computers
+        int choice = rand() % (movesValid.size()-1);
+
+        Hole* hole = movesValid[choice];
+        return hole;
+    }
+    //Computer to choose what piece to move in phase 2
+    else if(activePlayer->inMill == 0 && activePlayer->playerPhase == PHASE_TWO && (this->movingHole->moveState== false)){
+        qInfo() << "in top of comChoice if2";
+        Hole* hole;
+        int sizeButon = b->buttons.size();
+        QVector<Hole*> movesValid, movesPossible, ownedPieces, closeHorPieces, closeVerPieces, finalChoice;
+        //check all buttons for owned
+        for(int i =0; i < sizeButon; i++){
+
+            if(b->buttons[i]->playerOwned == activePlayer->turn){
+               ownedPieces.push_back(b->buttons[i]);
+
+            }
+
+        }
+        //check all buttons for possible places to move
+        for(int i =0; i < sizeButon; i++){
+            if(b->buttons[i]->filled == false){
+                movesPossible.push_back(b->buttons[i]);
+                qInfo() << "movePoss";
+                qInfo() << b->buttons[i]->filled;
+                qInfo() << b->buttons[i]->getRow();
+                qInfo() << b->buttons[i]->getCol();
+            }
+
+        }
+        for(int i =0; i < movesPossible.size(); i++){
+            momentToFill(movesPossible[i]);
+
+            qInfo() << "movePoss";
+            qInfo() << movesPossible[i]->filled;
+            qInfo() << movesPossible[i]->getRow();
+            qInfo() << movesPossible[i]->getCol();
+
+            if(checkMill(movesPossible[i])){
+                momentToUnfill(movesPossible[i]);
+                //movesPossible[i]->filled = false;
+                movesValid.push_back(movesPossible[i]);
+
+            }
+            //movesPossible[i]->filled = false;
+            momentToUnfill(movesPossible[i]);
+
+        }
+        for(int i =0; i < movesValid.size(); i++){
+
+            int horLen = 7;
+            int vertLen = 7;
+            for (int f =0; f < ownedPieces.size(); f++){
+                if(movesValid[i]->getCol() == ownedPieces[f]->getCol() &&
+                       (qFabs(ownedPieces[f]->getRow()- movesValid[i]->getRow()) < vertLen)){
+                    closeVerPieces.push_back(ownedPieces[f]);
+                    vertLen = qFabs(ownedPieces[f]->getRow()- movesValid[i]->getRow());
+                 }
+
+                if(movesValid[i]->getRow() == ownedPieces[f]->getRow() &&
+                        (qFabs(ownedPieces[f]->getCol() - movesValid[i]->getCol())< horLen)){
+                    closeHorPieces.push_back(ownedPieces[f]);
+                    horLen = qFabs(ownedPieces[f]->getCol() - movesValid[i]->getCol());
+                }
+            }
+            momentToFill(movesValid[i]);
+            //movesValid[i]->filled = true;
+            if(horLen < vertLen){
+                if(checkHorizontalMill(movesValid[i]) && !isHoleFilled(3,movesValid[i]->getCol())){
+                 finalChoice.push_back(closeVerPieces[0]);
+            }
+                else{
+                    finalChoice.push_back(closeHorPieces[0]);
+                }
+            }
+            else if(vertLen < horLen){
+                if(checkVerticalMill(movesValid[i]) && !isHoleFilled(movesValid[i]->getRow(),3)){
+                   finalChoice.push_back(closeHorPieces[0]);
+            }
+                else{
+                    finalChoice.push_back((closeVerPieces[0]));
+                }
+            }
+            else if(vertLen == horLen){
+                if(checkHorizontalMill(movesValid[i]))
+                {
+                     finalChoice.push_back(closeVerPieces[0]);
+                }
+                else if(checkVerticalMill(movesValid[i])){
+                    finalChoice.push_back(closeHorPieces[0]);
+                }
+            }
+            //movesValid[i]->filled = false;
+            momentToUnfill(movesValid[i]);
+
+
+
+        }
+
+
+        //int choice = rand() % finalChoice.size() - 1;
+        hole = finalChoice[0];
+        return hole;
+
+    }
+    //Computer choose that piece to move to empty space in phase 2
+    else if(activePlayer->inMill == 0 && activePlayer->playerPhase == PHASE_TWO && (this->movingHole->moveState == true)){
+        qInfo() << "in top of comChoice if3";
+        Hole* hole;
+        int sizeButon = b->buttons.size();
+        QVector<Hole*> movesValid, movesPossible, ownedPieces, closeHorPieces, closeVerPieces, finalChoice;
+        for(int i =0; i < sizeButon; i++){
+            if(b->buttons[i]->playerOwned == activePlayer->turn){
+               ownedPieces.push_back(b->buttons[i]);
+            }
+
+        }
+        for(int i =0; i < b->buttons.size(); i++){
+            if(b->buttons[i]->filled == false){
+                movesPossible.push_back(b->buttons[i]);
+            }
+
+        }
+        for(int i =0; i < movesPossible.size(); i++){
+            //movesPossible[i]->filled = true;
+            momentToFill(movesPossible[i]);
+            if(checkMill(movesPossible[i])){
+                momentToUnfill(movesPossible[i]);
+                //movesPossible[i]->filled = false;
+                movesValid.push_back(movesPossible[i]);
+
+            }
+            momentToUnfill(movesPossible[i]);
+            //movesPossible[i]->filled = false;
+
+
+        }
+        hole = movesValid[0];
+        return hole;
+
+    }
+    //Computer to choose what to delete in every phase
+    if(activePlayer->inMill == 1){
+        qInfo() << "in top of comChoice if4";
+        int sizeButon = b->buttons.size();
+        QVector<Hole*> movesValid;
+        for(int i =0; i < sizeButon; i++){
+            if(b->buttons[i]->removeReady == 1){
+                movesValid.push_back(b->buttons[i]);
+            }
+        }
+        //The intelligence of modern computers
+
+            int choice = rand() % (movesValid.size()-1);
+            Hole* hole = movesValid[choice];
+
+
+
+
+        return hole;
+
+    }
+
+    qInfo() << "in bottom of comChoice";
+}
+
+
+void game::momentToFill(Hole* hole){
+    for(int i =0; i < b->buttons.size(); i++){
+        if ((hole->getCol() == b->buttons[i]->getCol()) && (hole->getRow() == b->buttons[i]->getRow())){
+            b->buttons[i]->filled = true;
+            b->buttons[i]->playerOwned = activePlayer->turn;
+        }
+    }
+
+}
+void game::momentToUnfill(Hole* hole){
+    for(int i =0; i < b->buttons.size(); i++){
+        if ((hole->getCol() == b->buttons[i]->getCol()) && (hole->getRow() == b->buttons[i]->getRow())){
+            b->buttons[i]->filled = false;
+            b->buttons[i]->playerOwned = 0;
+        }
+    }
+
+}
 

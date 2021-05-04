@@ -15,6 +15,8 @@ public:
     int inMill =0;
     bool removing = false;
 
+    bool active = false;
+
 // methods
 public:
     player(int turn_);
