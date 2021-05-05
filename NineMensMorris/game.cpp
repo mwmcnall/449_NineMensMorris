@@ -6,8 +6,6 @@
 #include<QtMath>
 #include<string>
 
-
-
 // -- game(bool simulated)
 // -- Initialization to all variables, activates a GUI element for Player to choose their color if not simulated
 game::game(bool simulated) {
@@ -88,7 +86,6 @@ void game::ButtonPress() {
 
     //Activate Computer Player
     if(computerPlayer->active == true ){
-
             computerLoop(false);
         }
 
@@ -114,6 +111,7 @@ void game::gameLoop(Hole* holeClicked, bool simulated) {
    // ----- PHASE 3 -----
    if(this->activePlayer->playerPhase == PHASE_THREE){
         //TODO phase 3 fly
+       phase_three(button, simulated);
    }
 
    this->activePlayer->checkPhase();
@@ -230,6 +228,65 @@ void game::phase_two(Hole *hole, bool simulated) {
        }
        else
            return;
+   }
+}
+
+void game::phase_three(Hole *hole, bool simulated) {
+    // NOTE: Turn is only incremented when move is finished
+    // QUESTION: Is there ever no valid moves? Is game only over then?
+
+    if (this->flyingHole == nullptr)
+        this->flyingHole = hole;
+
+    // If a previous move formed a mill and hole is filled by other player
+    if (this->activePlayer->removing && hole->filled == true
+            && !(hole->playerOwned == this->turn)) {
+        // If hole forms a mill, can't remove it
+        if (checkMill(hole)) {
+            this->log->appendMessage("Can't remove piece! It forms a mill, try again");
+            return;
+        }
+        this->log->appendMessage("Removing opponent's piece at (" +
+                                 QString::number(hole->getRow()) + ", " +
+                                 QString::number(hole->getCol())+ ")");
+        hole->removeReady = true;
+        removePiece(hole, simulated);
+        this->activePlayer->removing = false;
+        this->incrementTurn();
+    }
+    // Move piece logic
+    else if ((this->flyingHole->flyState)) {
+        if (hole->filled == false) {
+           // Move
+           // Set hole to correct player image
+           hole->fillHole(this->activePlayer->turn);
+           this->log->appendMessage("Piece moved to (" +
+                                    QString::number(hole->getRow()) + ", " +
+                                    QString::number(hole->getCol())+ ")");
+           // Set flyingHole to nothing
+           this->flyingHole->emptyHole();
+           this->flyingHole->flyState = false;
+           // Check if piece formed a mill in it's new position
+           if(checkMill(hole)) {
+               // Set flag, don't increment turn
+               this->activePlayer->removing = true;
+               this->log->appendMessage("Mill formed! Select an opponent's piece to remove");
+               return;
+           }
+           incrementTurn();
+        }
+        else {
+            this->log->appendMessage("Invalid move spot! Try again.");
+        }
+       }
+    // If the hole is filled and the player owns it, activate fly state
+    else if ((hole->filled == true) && (this->activePlayer->turn == hole->playerOwned)) {
+       hole->flyState = true;
+       this->flyingHole = hole;
+       this->log->appendMessage("Piece at ("+
+                                QString::number(hole->getRow()) + ", " +
+                                QString::number(hole->getCol())+ ")" +
+                                " can be moved!");
    }
 }
 

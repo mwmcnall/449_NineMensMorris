@@ -24,6 +24,7 @@ public:
     int playerOwned = 0;
     int removeReady = 0;
     bool moveState = false;
+    bool flyState = false;
     Hole();
     Hole(int row, int column);
     void setCoords(int row, int column);

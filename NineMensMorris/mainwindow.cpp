@@ -12,8 +12,8 @@
 #define OPP_PAGE 2
 #define COLOR_PAGE 3
 
-#define HUMAN_PLAYER 0
-#define COMPUTER_PLAYER 1
+#define HUMAN_PLAYER false
+#define COMPUTER_PLAYER true
 
 #define WHITE_PIECES 2
 #define BLACK_PIECES 1
@@ -103,7 +103,8 @@ void MainWindow::activateGameScene() {
     main->setLayout(verticalGameLayout);
 
     g->setActivePlayer(human_color);
-    g->setComputerPlayer(human_color);
+    if (opponent == COMPUTER_PLAYER)
+        g->setComputerPlayer(!human_color);
 
     ui->stackedWidget->insertWidget(GAME_PAGE, main);
     ui->stackedWidget->setCurrentIndex(GAME_PAGE);

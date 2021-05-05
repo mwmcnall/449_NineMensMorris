@@ -46,8 +46,10 @@ private slots:
     void testClickValidMove();
     void testClickInvalidMove();
     void testMoveMillRemove();
+    void testClickInvalidMoveFar();
     // Fly Tests
     void testFlyPiece();
+    void testInvalidFlyPiece();
 };
 
 tests::tests()
@@ -721,11 +723,28 @@ void tests::testMoveMillRemove() {
     QCOMPARE(g->getActivePlayer()->turn, 2);
 }
 
+void tests::testClickInvalidMoveFar() {
+    game *g = setupGame();
+    gameMoveState(g);
+
+    g->setTurn(1);
+    // Click a button with one valid move state
+    g->SimulateButtonPress(3, 6);
+    // Click invalid move spot
+    g->SimulateButtonPress(3, 1);
+
+    // Check if clicked hole is filled
+    Hole* hole = g->getHole(3, 1);
+    QCOMPARE(hole->filled, false);
+    // Check if turn is still Black's, indicating an invalid destination was chosen
+    QCOMPARE(g->getActivePlayer()->turn, 1);
+}
+
 void tests::testFlyPiece() {
     game *g = setupGame();
     gameFlyState(g);
 
-    // Fly State assertions, only needed in one of any test function
+    // Fly State assertions, only needed in one of any fly tests function
     Hole* hole = g->getHole(1, 1);
     QCOMPARE(hole->filled, true);
     QCOMPARE(hole->playerOwned, 2);
@@ -753,12 +772,26 @@ void tests::testFlyPiece() {
     // Attempt to fly piece
     g->SimulateButtonPress(0, 6);
     g->SimulateButtonPress(6, 0);
-    hole = g->getHole(0, 6);
+    hole = g->getHole(6, 0);
 
     QCOMPARE(hole->filled, true);
     QCOMPARE(hole->playerOwned, 1);
     QCOMPARE(g->getActivePlayer()->turn, 2);
 
+}
+
+void tests::testInvalidFlyPiece() {
+    game *g = setupGame();
+    gameFlyState(g);
+
+    // NOTE: It is currently black's turn
+    // Attempt to fly a piece into a filled spot
+    g->SimulateButtonPress(0, 6);
+    g->SimulateButtonPress(3, 1);
+    Hole* hole = g->getHole(3, 1);
+
+    QCOMPARE(hole->filled, true);
+    QCOMPARE(hole->playerOwned, 2);
 }
 
 //Test Remove

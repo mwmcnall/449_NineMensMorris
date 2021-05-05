@@ -31,6 +31,7 @@ private:
 
     bool playerMoving = false;
     Hole* movingHole = nullptr;
+    Hole* flyingHole = nullptr;
 
     player* computerPlayer;
 
@@ -70,7 +71,8 @@ private:
     bool isValidHoleMoveRight(int, int);
     // Phases
     void phase_one(Hole *, bool simulated);
-    void phase_two(Hole *, bool simaulted);
+    void phase_two(Hole *, bool simulated);
+    void phase_three(Hole *, bool simulated);
     //Computer Player
 
     void computerLoop(bool simulated);
