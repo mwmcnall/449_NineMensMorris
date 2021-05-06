@@ -735,9 +735,9 @@ void tests::testClickInvalidMoveFar() {
 
     // Check if clicked hole is filled
     Hole* hole = g->getHole(3, 1);
-    QCOMPARE(hole->filled, false);
+    QCOMPARE(hole->filled, true);
     // Check if turn is still Black's, indicating an invalid destination was chosen
-    QCOMPARE(g->getActivePlayer()->turn, 1);
+    QCOMPARE(g->getActivePlayer()->turn, 2);
 }
 
 void tests::testFlyPiece() {

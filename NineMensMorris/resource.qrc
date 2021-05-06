@@ -3,5 +3,7 @@
         <file>img/board.jpg</file>
         <file>img/black dot.jpg</file>
         <file>img/white dot.jpg</file>
+        <file>img/black dot.png</file>
+        <file>img/white dot.png</file>
     </qresource>
 </RCC>

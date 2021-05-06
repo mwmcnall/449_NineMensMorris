@@ -44,10 +44,10 @@ void Hole::fillHole(int player) {
 void Hole::activateImage(int player) {
 
     if (player == 1) {
-        this->setStyleSheet("border-image: url(:/img/img/black dot.jpg) 0 0 0 0 stretch stretch");
+        this->setStyleSheet("border-image: url(:/img/img/black dot.png) 0 0 0 0 stretch stretch");
 
     } else if (player == 2) {
-        this->setStyleSheet("border-image: url(:/img/img/white dot.jpg) 0 0 0 0 stretch stretch");
+        this->setStyleSheet("border-image: url(:/img/img/white dot.png) 0 0 0 0 stretch stretch");
     }
 
 }
