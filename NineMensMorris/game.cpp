@@ -116,6 +116,19 @@ void game::gameLoop(Hole* holeClicked, bool simulated) {
 
     // TODO: Need to figure out how to set the turn via the GUI before the board is built
     // Otherwise we need a check like this, which is inefficient
+
+    if(playerOne->totalPieces < 3){
+        this->log->appendMessage("Player Two has won. Try again!");
+        return;
+    };
+
+    if(playerTwo->totalPieces < 3){
+        this->log->appendMessage("Player One Has won! Good job!");
+        return;
+    };
+
+
+
     if (this->turn == -1) {
         setTurn(this->game_gui->getTurn());
         setActivePlayer(this->game_gui->getTurn());
@@ -161,10 +174,7 @@ void game::phase_one(Hole *hole, bool simulated) {
             hole->fillHole(this->activePlayer->turn);
             this->activePlayer->checkPhase();
 
-            //TODO: remove piece when gaining mill. Will most likely need to allow for a second button press? for checking pieces
-            //possibly add 2 more game states, one for player one clicking on piece to remove, one for player two to click on piece to remove
-            //also possibly too complicated. Will need to discuss further when other members are available
-               //may need help from gui peeps to understand what to remove
+
 
             if(checkMill(hole)){
                 this->log->appendMessage("You got mill!");
@@ -172,6 +182,12 @@ void game::phase_one(Hole *hole, bool simulated) {
                 this->activePlayer->inMill = 1;
                 this->activePlayer->removing = true;
                 removePiece(hole, simulated);
+                if(this->activePlayer == playerOne){
+                    playerTwo->totalPieces -= 1;
+                }
+                else if(this->activePlayer == playerTwo){
+                    playerOne->totalPieces -=1;
+                }
             }
             else{
                 this->incrementTurn();
@@ -219,12 +235,18 @@ void game::phase_two(Hole *hole, bool simulated) {
                                  QString::number(hole->getCol())+ ")");
         hole->removeReady = true;
         removePiece(hole, simulated);
+        if(this->activePlayer == playerOne){
+            playerTwo->totalPieces -= 1;
+        }
+        else if(this->activePlayer == playerTwo){
+            playerOne->totalPieces -=1;
+        }
         this->activePlayer->removing = false;
         this->incrementTurn();
     }
     // Move piece logic
     else if ((this->movingHole->moveState)) {
-        if (hole->filled == false && validMoveCount(hole) ) {
+        if (hole->filled == false) {
            // Move
            // Set hole to correct player image
            hole->fillHole(this->activePlayer->turn);
