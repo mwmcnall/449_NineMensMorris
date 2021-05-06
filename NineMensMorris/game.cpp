@@ -833,8 +833,8 @@ void game::computerPhaseTwo(bool simulated){
        }
        else{
            //Adding computerloop
-           //computerLoop(simulated);
-           return;
+           computerLoop(simulated);
+           //return;
        }
    }
      qInfo() << "in bottom of compPhase2";
@@ -994,7 +994,7 @@ Hole* game::computerChoice(){
     else if(activePlayer->inMill == 0 && activePlayer->playerPhase == PHASE_TWO && (this->movingHole->moveState == true)){
         qInfo() << "in top of comChoice if3";
         Hole* hole;
-        if(emergcyChoice->emergcy == true){
+        if(emergcy == true){
             hole = computerEmergnyChoice2();
             return hole;
         }
@@ -1115,9 +1115,18 @@ Hole* game::computerEmergnyChoice1(){
         }
     }
     qInfo() << finalChoice.size();
-    emergcyChoice = finalChoice[0];
-    emergcyChoice->emergcy = true;
-    hole = finalChoice[0];
+
+    for(int i =0; i < emergcyChoices.size(); i++){
+
+        if(finalChoice[compf] == emergcyChoices[i])
+        {
+            compf++;
+        }
+    }
+    emergcy = true;
+    emergcyChoice = finalChoice[compf];
+    hole = finalChoice[compf];
+    emergcyChoices.push_back(finalChoice[0]);
     return hole;
 
 }
@@ -1147,7 +1156,7 @@ Hole* game::computerEmergnyChoice2(){
     else if(!(closeHorPieces.size()==0)){
         finalChoice.push_back(closeHorPieces[0]);
     }
-    emergcyChoice->emergcy = false;
+    emergcy = false;
     return finalChoice[0];
 
 }

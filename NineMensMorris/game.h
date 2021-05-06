@@ -34,7 +34,10 @@ private:
     Hole* flyingHole = nullptr;
 
     player* computerPlayer;
+    QVector<Hole*> emergcyChoices;
     Hole* emergcyChoice;
+    bool emergcy = false;
+    int compf =0;
 
 // methods
 public:
