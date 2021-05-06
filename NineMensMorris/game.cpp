@@ -104,6 +104,24 @@ void game::gameLoop(Hole* holeClicked, bool simulated) {
     Hole* button = holeClicked;
     //TODO logic should allow for moving pieces when there is no more pieces
 
+    if(playerOne->totalPieces < 3){
+            this->log->appendMessage("Player Two has won. Try again!");
+            return;
+        };
+
+    if(playerTwo->totalPieces < 3){
+            this->log->appendMessage("Player One Has won! Good job!");
+            return;
+        };
+
+    if(computerPlayer->totalPieces < 3){
+        this->log->appendMessage("You've won! Good job!");
+        return;
+    }
+
+
+
+
     if (this->activePlayer->playerPhase == PHASE_ONE) {
         phase_one(button, simulated);
     }
@@ -147,6 +165,7 @@ void game::phase_one(Hole *hole, bool simulated) {
                 this->activePlayer->inMill = 1;
                 this->activePlayer->removing = true;
                 removePiece(hole, simulated);
+
             }
             else{
                 this->incrementTurn();
@@ -164,6 +183,7 @@ void game::phase_one(Hole *hole, bool simulated) {
         if (checkMill(hole))
             return;
         removePiece(hole, simulated);
+
         this->incrementTurn();
         this->activePlayer->removing = false;
     }
@@ -190,6 +210,7 @@ void game::phase_two(Hole *hole, bool simulated) {
                                  QString::number(hole->getCol())+ ")");
         hole->removeReady = true;
         removePiece(hole, simulated);
+
         this->activePlayer->removing = false;
         this->incrementTurn();
     }
@@ -562,6 +583,13 @@ void game::removePiece(Hole *button, bool simulated){
         //remove button
         qInfo() << "Removing this piece?";
         //removes hole
+        if(button->playerOwned == 1){
+            playerOne->totalPieces -=1;
+        }
+
+        else if(button->playerOwned == 2){
+            playerTwo->totalPieces -=1;
+        }
         button->emptyHole();
         button->playerOwned = 0;
         //Turn them back to not ready
