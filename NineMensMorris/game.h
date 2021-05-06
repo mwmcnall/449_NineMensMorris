@@ -34,6 +34,7 @@ private:
     Hole* flyingHole = nullptr;
 
     player* computerPlayer;
+    Hole* emergcyChoice;
 
 // methods
 public:
@@ -82,6 +83,8 @@ private:
     Hole* computerChoice();
     void momentToFill(Hole* hole);
     void momentToUnfill(Hole* hole);
+    Hole* computerEmergnyChoice1();
+    Hole* computerEmergnyChoice2();
 };
 
 #endif // GAME_H

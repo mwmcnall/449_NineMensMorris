@@ -25,6 +25,7 @@ public:
     int removeReady = 0;
     bool moveState = false;
     bool flyState = false;
+    bool emergcy = false;
     Hole();
     Hole(int row, int column);
     void setCoords(int row, int column);

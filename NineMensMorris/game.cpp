@@ -16,6 +16,7 @@ game::game(bool simulated) {
     this->playerTwoGUI = new player_GUI();
 
     this->computerPlayer = new player(-1);
+
 }
 
 // -- getTurn()
@@ -81,12 +82,16 @@ void game::incrementTurn() {
 // -- Runs the gameLoop logic with the clicked button
 void game::ButtonPress() {
     Hole *button = qobject_cast<Hole*>(sender());
+    if(computerPlayer->turn == -1 && computerPlayer->active == true){
+        setComputerPlayer(turn);
+    }
 
     gameLoop(button, false);
 
     //Activate Computer Player
-    if(computerPlayer->active == true ){
-            computerLoop(false);
+    if(this->computerPlayer->active == true && computerPlayer->turn == turn){
+
+        computerLoop(false);
         }
 
 }
@@ -361,6 +366,7 @@ bool game::checkVerticalMill(Hole *hole) {
 
             return true;
         }
+        qInfo() << "v1False";
 
 
     }
@@ -371,6 +377,7 @@ bool game::checkVerticalMill(Hole *hole) {
 
             return true;
         }
+        qInfo() << "v2False";
 
     }
     else if(horCord < 3){
@@ -380,6 +387,7 @@ bool game::checkVerticalMill(Hole *hole) {
 
             return true;
         }
+        qInfo() << "v3False";
 
     }
 
@@ -401,6 +409,7 @@ bool game::checkHorizontalMill(Hole *hole) {
 
             return true;
         }
+        qInfo() << "h1False";
     }
     else if(vertCord > 3){
         if(isHoleFilled(horCord,6, holeColor) &&
@@ -409,6 +418,7 @@ bool game::checkHorizontalMill(Hole *hole) {
 
             return true;
         }
+        qInfo() << "h2False";
 
     }
     else if(vertCord < 3){
@@ -418,6 +428,7 @@ bool game::checkHorizontalMill(Hole *hole) {
 
             return true;
         }
+        qInfo() << "h3False";
 
     }
 
@@ -650,7 +661,8 @@ void  game::computerLoop(bool simulated){
    }
 
    this->activePlayer->checkPhase();
-     qInfo() << "in bottom of computerloop";
+   //qInfo() << "in bottom of computerloop";
+
 
 }
 void game::computerPhaseOne(bool simulated){
@@ -827,6 +839,11 @@ Hole* game::computerChoice(){
         qInfo() << "in top of comChoice if2";
         Hole* hole;
         int sizeButon = b->buttons.size();
+
+        //Emergcy
+        hole = computerEmergnyChoice1();
+        return hole;
+
         QVector<Hole*> movesValid, movesPossible, ownedPieces, closeHorPieces, closeVerPieces, finalChoice;
         //check all buttons for owned
         for(int i =0; i < sizeButon; i++){
@@ -841,7 +858,7 @@ Hole* game::computerChoice(){
         for(int i =0; i < sizeButon; i++){
             if(b->buttons[i]->filled == false){
                 movesPossible.push_back(b->buttons[i]);
-                qInfo() << "movePoss";
+                qInfo() << "movePossPush";
                 qInfo() << b->buttons[i]->filled;
                 qInfo() << b->buttons[i]->getRow();
                 qInfo() << b->buttons[i]->getCol();
@@ -851,12 +868,16 @@ Hole* game::computerChoice(){
         for(int i =0; i < movesPossible.size(); i++){
             momentToFill(movesPossible[i]);
 
-            qInfo() << "movePoss";
+            qInfo() << "movesValidcheck";
             qInfo() << movesPossible[i]->filled;
             qInfo() << movesPossible[i]->getRow();
             qInfo() << movesPossible[i]->getCol();
 
             if(checkMill(movesPossible[i])){
+                qInfo() << "movesValidPush";
+                qInfo() << movesPossible[i]->filled;
+                qInfo() << movesPossible[i]->getRow();
+                qInfo() << movesPossible[i]->getCol();
                 momentToUnfill(movesPossible[i]);
                 //movesPossible[i]->filled = false;
                 movesValid.push_back(movesPossible[i]);
@@ -873,30 +894,36 @@ Hole* game::computerChoice(){
             for (int f =0; f < ownedPieces.size(); f++){
                 if(movesValid[i]->getCol() == ownedPieces[f]->getCol() &&
                        (qFabs(ownedPieces[f]->getRow()- movesValid[i]->getRow()) < vertLen)){
+                    qInfo() << "closeVPush";
                     closeVerPieces.push_back(ownedPieces[f]);
                     vertLen = qFabs(ownedPieces[f]->getRow()- movesValid[i]->getRow());
                  }
 
                 if(movesValid[i]->getRow() == ownedPieces[f]->getRow() &&
                         (qFabs(ownedPieces[f]->getCol() - movesValid[i]->getCol())< horLen)){
+                    qInfo() << "CloseHPush";
                     closeHorPieces.push_back(ownedPieces[f]);
                     horLen = qFabs(ownedPieces[f]->getCol() - movesValid[i]->getCol());
                 }
             }
             momentToFill(movesValid[i]);
             //movesValid[i]->filled = true;
-            if(horLen < vertLen){
-                if(checkHorizontalMill(movesValid[i]) && !isHoleFilled(3,movesValid[i]->getCol())){
-                 finalChoice.push_back(closeVerPieces[0]);
+            if(closeHorPieces.size() == 0 && closeVerPieces.size() == 0){
+                qInfo() << "Game Over 0,0";
+                hole = computerEmergnyChoice1();
             }
+            else if(horLen < vertLen){
+                if(checkHorizontalMill(movesValid[i]) && !isHoleFilled(3,movesValid[i]->getCol()) && !(closeVerPieces.size() == 0)){
+                 finalChoice.push_back(closeVerPieces[0]);
+                }
                 else{
                     finalChoice.push_back(closeHorPieces[0]);
                 }
             }
             else if(vertLen < horLen){
-                if(checkVerticalMill(movesValid[i]) && !isHoleFilled(movesValid[i]->getRow(),3)){
+                if(checkVerticalMill(movesValid[i]) && !isHoleFilled(movesValid[i]->getRow(),3) && !(closeHorPieces.size() == 0)){
                    finalChoice.push_back(closeHorPieces[0]);
-            }
+                }
                 else{
                     finalChoice.push_back((closeVerPieces[0]));
                 }
@@ -909,9 +936,14 @@ Hole* game::computerChoice(){
                 else if(checkVerticalMill(movesValid[i])){
                     finalChoice.push_back(closeHorPieces[0]);
                 }
+                else{
+                    finalChoice.push_back(closeHorPieces[0]);
+                }
             }
             //movesValid[i]->filled = false;
             momentToUnfill(movesValid[i]);
+            qInfo() << "FinalChoicesize";
+            qInfo() << finalChoice.size();
 
 
 
@@ -919,7 +951,14 @@ Hole* game::computerChoice(){
 
 
         //int choice = rand() % finalChoice.size() - 1;
-        hole = finalChoice[0];
+        if (finalChoice.size() == 0){
+            qInfo() << "gameOver 0";
+            hole = computerEmergnyChoice1();
+
+        }
+        else{
+            hole = finalChoice[0];
+        }
         return hole;
 
     }
@@ -927,6 +966,10 @@ Hole* game::computerChoice(){
     else if(activePlayer->inMill == 0 && activePlayer->playerPhase == PHASE_TWO && (this->movingHole->moveState == true)){
         qInfo() << "in top of comChoice if3";
         Hole* hole;
+        if(emergcyChoice->emergcy == true){
+            hole = computerEmergnyChoice2();
+            return hole;
+        }
         int sizeButon = b->buttons.size();
         QVector<Hole*> movesValid, movesPossible, ownedPieces, closeHorPieces, closeVerPieces, finalChoice;
         for(int i =0; i < sizeButon; i++){
@@ -1004,3 +1047,79 @@ void game::momentToUnfill(Hole* hole){
 
 }
 
+Hole* game::computerEmergnyChoice1(){
+    //Pieces equal more than 2
+    Hole* hole;
+    QVector<Hole*> movesValid, movesPossible, ownedPieces, closeHorPieces, closeVerPieces, finalChoice;
+
+    for(int i =0; i < b->buttons.size(); i++){
+
+        if(b->buttons[i]->playerOwned == activePlayer->turn){
+           ownedPieces.push_back(b->buttons[i]);
+
+        }
+
+    }
+    for(int i =0; i < b->buttons.size(); i++){
+        if(b->buttons[i]->filled == false){
+            movesPossible.push_back(b->buttons[i]);
+        }
+    }
+    for(int i =0; i < ownedPieces.size(); i++){
+        int vertLen = 7;
+        int horLen = 7;
+        for(int f =0; f< movesPossible.size(); f++){
+            if(ownedPieces[i]->getCol() == movesPossible[f]->getCol() &&  (qFabs(ownedPieces[i]->getRow()- movesPossible[f]->getRow()) < vertLen)){
+                closeVerPieces.push_back(movesPossible[f]);
+                vertLen = qFabs(ownedPieces[i]->getRow()- movesPossible[f]->getRow());
+            }
+            if(ownedPieces[i]->getRow() == movesPossible[f]->getRow() && (qFabs(ownedPieces[i]->getCol()- movesPossible[f]->getCol()) < horLen)){
+                closeHorPieces.push_back(movesPossible[f]);
+                horLen = qFabs(ownedPieces[i]->getCol()- movesPossible[f]->getCol());
+            }
+        }
+        if(!(closeVerPieces.size() ==0)){
+            finalChoice.push_back(ownedPieces[i]);
+
+        }
+        else if(!(closeHorPieces.size()==0)){
+            finalChoice.push_back(ownedPieces[i]);
+        }
+    }
+    qInfo() << finalChoice.size();
+    emergcyChoice = finalChoice[0];
+    emergcyChoice->emergcy = true;
+    hole = finalChoice[0];
+    return hole;
+
+}
+Hole* game::computerEmergnyChoice2(){
+    QVector<Hole*> movesPossible, closeHorPieces, closeVerPieces, finalChoice;
+    int vertLen = 7;
+    int horLen = 7;
+    for(int i =0; i < b->buttons.size(); i++){
+        if(b->buttons[i]->filled == false){
+            movesPossible.push_back(b->buttons[i]);
+        }
+    }
+    for(int f =0; f< movesPossible.size(); f++){
+        if(emergcyChoice->getCol() == movesPossible[f]->getCol() &&  (qFabs(emergcyChoice->getRow()- movesPossible[f]->getRow()) < vertLen)){
+            closeVerPieces.push_back(movesPossible[f]);
+            vertLen = qFabs(emergcyChoice->getRow()- movesPossible[f]->getRow());
+        }
+        if(emergcyChoice->getRow() == movesPossible[f]->getRow() && (qFabs(emergcyChoice->getCol()- movesPossible[f]->getCol()) < horLen)){
+            closeHorPieces.push_back(movesPossible[f]);
+            horLen = qFabs(emergcyChoice->getCol()- movesPossible[f]->getCol());
+        }
+    }
+    if(!(closeVerPieces.size() ==0)){
+        finalChoice.push_back(closeVerPieces[0]);
+
+    }
+    else if(!(closeHorPieces.size()==0)){
+        finalChoice.push_back(closeHorPieces[0]);
+    }
+    emergcyChoice->emergcy = false;
+    return finalChoice[0];
+
+}
